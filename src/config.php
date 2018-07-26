@@ -208,7 +208,8 @@ G::$G['VIEW']['_Lbl'] = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'to the page yo
  *  Check each ^directory/ for a config
  *  Each application config should limit itself to G::$G[APPNAME]
  ****************************************************************************/
-if ($_dir = opendir(SITE)) {
+$_dir = opendir(SITE);
+if ($_dir) {
     while (false !== $_file = readdir($_dir)) {
         if ('^' == $_file[0] && '^' != $_file) {
             if (file_exists(SITE.'/'.$_file.'/config.php')) {

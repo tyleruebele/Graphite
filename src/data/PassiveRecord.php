@@ -25,8 +25,11 @@ namespace Stationer\Graphite\data;
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
+ * @property string  $table
+ * @property string  $pkey
+ * @property array[] $vars
  */
-abstract class PassiveRecord extends DataModel implements JsonSerializable {
+abstract class PassiveRecord extends DataModel implements \JsonSerializable {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 

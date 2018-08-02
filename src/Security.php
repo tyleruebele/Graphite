@@ -14,8 +14,8 @@
 
 namespace Stationer\Graphite;
 
-use Stationer\Graphite\data\Login;
-use Stationer\Graphite\data\LoginLog;
+use Stationer\Graphite\models\Login;
+use Stationer\Graphite\models\LoginLog;
 use Stationer\Graphite\data\DataBroker;
 
 /**

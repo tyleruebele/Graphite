@@ -35,10 +35,13 @@ G::$G['namespaces'] = [
     '\\',
     '\\Stationer\\Graphite\\',
     '\\Stationer\\Graphite\\data\\',
-    '\\Stationer\\barrel\\',
-    '\\Stationer\\barrel\\data\\',
-    '\\Stationer\\barrel\\controllers\\',
-    '\\Stationer\\pencil\\',
+    '\\Stationer\\Graphite\\models\\',
+    '\\Stationer\\Barrel\\',
+    '\\Stationer\\Barrel\\data\\',
+    '\\Stationer\\Barrel\\models\\',
+    '\\Stationer\\Barrel\\controllers\\',
+    '\\Stationer\\Pencil\\',
+    '\\Stationer\\Pencil\\models\\',
 ];
 
 // enable the installer -- reverse this when installed

@@ -79,7 +79,7 @@ class DataBroker implements IDataProvider {
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return Record|array Found records
+     * @return ActiveRecord|array Found records
      */
     public function byPK($class, $pkey) {
         return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $pkey);
@@ -165,7 +165,7 @@ class DataBroker implements IDataProvider {
     /**
      * Delete record data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to delete, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */

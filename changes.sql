@@ -1,0 +1,4 @@
+-- 
+-- 2018-08-02 Initialize file
+-- Schema Changes will accumulate here
+-- 

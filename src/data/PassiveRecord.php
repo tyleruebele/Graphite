@@ -14,6 +14,8 @@
 
 namespace Stationer\Graphite\data;
 
+use Stationer\Graphite\G;
+
 /**
  * PassiveRecord class - used as a base class for Record Model classes
  *  for use with a DataProvider
@@ -261,4 +263,232 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
     public function jsonSerialize() {
         return $this->toArray();
     }
+
+    /**
+     * Generate DDL to Drop table in database
+     *
+     * @return mixed
+     */
+    public static function drop() {
+        $query = "DROP TABLE IF EXISTS `".static::$table."`;";
+        
+        return $query;
+    }
+
+    /**
+     * Generate DDL to Create table in database
+     *
+     * @return mixed
+     */
+    public static function create() {
+        $query = "CREATE TABLE IF NOT EXISTS `".static::$table."` (\n";
+        foreach (static::$vars as $field => $config) {
+            $query .= '    '.static::getDDL($field).",\n";
+        }
+        if (!empty(static::$keys)) {
+            foreach (static::$keys as $key) {
+                if (is_array($key)) {
+                    $key = implode('`,`', $key);
+                }
+                $query .= "    KEY (`$key`),\n";
+            }
+        }
+        foreach (['updated_dts','recordChanged'] as $key) {
+            if (!empty(static::$vars[$key]) && !in_array($key, static::$keys ?? [])) {
+                $query .= "    KEY (`$key`),\n";
+            }
+        }
+        if (!empty(static::$ukeys)) {
+            foreach (static::$ukeys as $key) {
+                if (is_array($key)) {
+                    $key = implode('`,`', $key);
+                }
+                $query .= "    UNIQUE KEY (`$key`),\n";
+            }
+        }
+        $query .= "    PRIMARY KEY(`".static::$pkey."`)\n);";
+
+        return $query;
+    }
+
+    /**
+     * Get or derive DDL for specified field
+     *
+     * @param string $field Specified field
+     *
+     * @return bool|string
+     */
+    public static function getDDL($field) {
+        if (isset(static::$vars[$field]['ddl'])) {
+            return static::$vars[$field]['ddl'];
+        }
+
+        return static::deriveDDL($field);
+    }
+
+    /**
+     * Derive DDL for a field as configured in self::$vars
+     *
+     * @param string $field Name of field to derive DDL for
+     *
+     * @return bool|string
+     */
+    public static function deriveDDL($field) {
+        if (!isset(static::$vars[$field])) {
+            return false;
+        }
+        $config = static::$vars[$field];
+        switch ($config['type']) {
+            case 'f':
+                // float
+                $config['ddl'] = '`'.$field.'` float NOT NULL';
+                if (isset($config['def']) && is_numeric($config['def'])) {
+                    $config['ddl'] .= ' DEFAULT '.$config['def'];
+                }
+                break;
+            case 'b':
+                // boolean stored as bit
+                $config['ddl'] = '`'.$field.'` bit(1) NOT NULL';
+                if (isset($config['def'])) {
+                    $config['ddl'] .= ' DEFAULT '.($config['def'] ? "b'1'" : "b'0'");
+                } else {
+                    $config['ddl'] .= " DEFAULT b'0'";
+                }
+                break;
+            case 'ip':
+                // IP address stored as int
+                $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
+                if (isset($config['def'])) {
+                    if (!is_numeric($config['def'])) {
+                        $config['ddl'] .= ' DEFAULT '.ip2long($config['def']);
+                    } else {
+                        $config['ddl'] .= ' DEFAULT '.$config['def'];
+                    }
+                } else {
+                    $config['ddl'] .= ' DEFAULT 0';
+                }
+                break;
+            case 'em':
+                // email address
+            case 'o':
+                // serialize()'d variables
+            case 'j':
+                // json_encoded()'d variables
+            case 'a':
+                // serialized arrays
+            case 's':
+                // string
+                if (!isset($config['max']) || !is_numeric($config['max']) || 16777215 < $config['max']) {
+                    $config['ddl'] = '`'.$field.'` longtext NOT NULL';
+                } elseif (65535 < $config['max']) {
+                    $config['ddl'] = '`'.$field.'` mediumtext NOT NULL';
+                } elseif (255 < $config['max']) {
+                    $config['ddl'] = '`'.$field.'` text NOT NULL';
+                } else {
+                    $config['ddl'] = '`'.$field.'` varchar('.((int)$config['max']).') NOT NULL';
+                }
+                if (isset($config['def'])) {
+                    $def = ($config['def'] == '' ? '' : G::$M->escape_string($config['def']));
+                    $config['ddl'] .= " DEFAULT '$def'";
+                }
+                break;
+            case 'ts':
+                // int based timestamps
+                // convert date min/max values to ints and fall through
+                if (isset($config['min']) && !is_numeric($config['min'])) {
+                    $config['min'] = strtotime($config['min']);
+                }
+                if (isset($config['max']) && !is_numeric($config['max'])) {
+                    $config['max'] = strtotime($config['max']);
+                }
+                if (isset($config['def']) && !is_numeric($config['def'])) {
+                    $config['def'] = strtotime($config['def']);
+                }
+            // fall through
+            case 'i':
+                // integers
+                if (isset($config['min']) && is_numeric($config['min']) && 0 <= $config['min']) {
+                    if (!isset($config['max']) || !is_numeric($config['max'])) {
+                        $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
+                    } elseif (4294967295 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` bigint(20) unsigned NOT NULL';
+                    } elseif (16777215 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
+                    } elseif (65535 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` mediumint(7) unsigned NOT NULL';
+                    } elseif (255 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` smallint(5) unsigned NOT NULL';
+                    } elseif (0 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` tinyint(3) unsigned NOT NULL';
+                    }
+                } else {
+                    if (!isset($config['max']) || !is_numeric($config['max'])) {
+                        $config['ddl'] = '`'.$field.'` int(11) NOT NULL';
+                    } elseif (2147483647 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` bigint(20) NOT NULL';
+                    } elseif (8388607 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` int(11) NOT NULL';
+                    } elseif (32767 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` mediumint(8) NOT NULL';
+                    } elseif (127 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` smallint(6) NOT NULL';
+                    } elseif (0 < $config['max']) {
+                        $config['ddl'] = '`'.$field.'` tinyint(4) NOT NULL';
+                    }
+                }
+                if (isset($config['def']) && is_numeric($config['def'])) {
+                    $config['ddl'] .= ' DEFAULT '.((int)$config['def']);
+                } elseif ($field != static::$pkey) {
+                    $config['ddl'] .= ' DEFAULT 0';
+                }
+
+                // If the PRIMARY KEY is an INT type, assume AUTO_INCREMENT
+                // This can be overridden with an explicit DDL
+                if ($field == static::$pkey) {
+                    $config['ddl'] .= ' AUTO_INCREMENT';
+                }
+                break;
+            case 'e':
+                // enums
+                $config['ddl'] = '`'.$field.'` enum(';
+                foreach ($config['values'] as $v) {
+                    $config['ddl'] .= "'".G::$M->escape_string($v)."',";
+                }
+                $config['ddl'] = substr($config['ddl'], 0, -1).') NOT NULL';
+                if (isset($config['def'])) {
+                    $def = ($config['def'] == '' ? '' : G::$M->escape_string($config['def']));
+                    $config['ddl'] .= " DEFAULT '$def'";
+                }
+                break;
+            case 'dt':
+                // datetimes and mysql timestamps
+                // A column called 'recordChanged' is assumed to be a MySQL timestamp
+                if (in_array($field, ['recordChanged', 'updated_dts'])) {
+                    $config['ddl'] = '`'.$field.'` timestamp NOT NULL'
+                        .' DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
+                    break;
+                }
+
+                if ('_dts' == substr($field, -4)) {
+                    $config['ddl'] = '`'.$field.'` timestamp NOT NULL';
+                } else {
+                    $config['ddl'] = '`'.$field.'` datetime NOT NULL';
+                }
+                if (isset($config['def'])) {
+                    // This supports more flexible defaults, like '5 days ago'
+                    if (!is_numeric($config['def'])) {
+                        $config['def'] = strtotime($config['def']);
+                    }
+                    $config['ddl'] .= " DEFAULT '".date('Y-m-d H:i:s', $config['def'])."'";
+                }
+                break;
+            default:
+                trigger_error('Unknown field type "'.$config['type'].'" in Record::create()');
+
+                return false;
+        }
+
+        return $config['ddl'];
+    }
+
 }

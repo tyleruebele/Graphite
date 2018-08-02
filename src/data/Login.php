@@ -26,42 +26,60 @@ use Stationer\Graphite\PasswordHasher;
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/Record.php
+ * @property int    $login_id
+ * @property int    $created_uts
+ * @property string $updated_dts
+ * @property int    $edited_uts
+ * @property int    $active_uts
+ * @property int    $login_uts
+ * @property int    $logout_uts
+ * @property string $loginname
+ * @property string $password
+ * @property string $realname
+ * @property string $email
+ * @property string $comment
+ * @property string $UA
+ * @property string $lastIP
+ * @property int    $referrer_id
+ * @property bool   $disabled
+ * @property bool   $flagChangePass
  */
-class Login extends Record {
+class Login extends PassiveRecord {
     /** @var string Table name, un-prefixed */
-    protected static $table = G_DB_TABL.'Logins';
+    protected static $table = G_DB_TABL.'Login';
     /** @var string Primary Key */
-    protected static $pkey  = 'login_id';
+    protected static $pkey = 'login_id';
     /** @var string Select query, without WHERE clause */
     protected static $query = '';
     /** @var array Table definition as collection of fields */
-    protected static $vars  = array(
-        'login_id'        => array('type' => 'i' , 'min' => 1, 'guard' => true),
-        'loginname'       => array('type' => 's' , 'strict' => true, 'min' => 3, 'max' => 255),
-        'password'        => array('type' => 's' , 'strict' => true, 'min' => 3, 'max' => 255),
-        'realname'        => array('type' => 's' , 'max' => 255),
-        'email'           => array('type' => 'em', 'max' => 255),
-        'comment'         => array('type' => 's' , 'max' => 255),
-        'UA'              => array('type' => 's' , 'min' => 40, 'max' => 40),
-        'lastIP'          => array('type' => 'ip'),
-        'dateActive'      => array('type' => 'ts', 'min' => 0),
-        'dateLogin'       => array('type' => 'ts', 'min' => 0),
-        'dateLogout'      => array('type' => 'ts', 'min' => 0),
-        'dateModified'    => array('type' => 'ts', 'min' => 0),
-        'dateCreated'     => array('type' => 'ts', 'min' => 0),
-        'referrer_id'     => array('type' => 'i' , 'strict' => true, 'def' => 0, 'min' => 1),
-        'disabled'        => array('type' => 'b' , 'def' => 0),
-        'flagChangePass'  => array('type' => 'b' , 'def' => 1),
-    );
+    protected static $vars = [
+        'login_id'       => ['type' => 'i', 'min' => 1, 'guard' => true],
+        'created_uts'    => ['type' => 'ts', 'min' => 0, 'guard' => true],
+        'updated_dts'    => ['type' => 'dt', 'min' => NOW, 'def' => NOW, 'guard' => true],
+        'edited_uts'     => ['type' => 'dt', 'min' => NOW, 'def' => NOW, 'guard' => true],
+        'active_uts'     => ['type' => 'ts', 'min' => 0],
+        'login_uts'      => ['type' => 'ts', 'min' => 0],
+        'logout_uts'     => ['type' => 'ts', 'min' => 0],
+        'loginname'      => ['type' => 's', 'strict' => true, 'min' => 3, 'max' => 255],
+        'password'       => ['type' => 's', 'strict' => true, 'min' => 3, 'max' => 255],
+        'realname'       => ['type' => 's', 'max' => 255],
+        'email'          => ['type' => 'em', 'max' => 255],
+        'comment'        => ['type' => 's', 'max' => 255],
+        'UA'             => ['type' => 's', 'min' => 40, 'max' => 40],
+        'lastIP'         => ['type' => 'ip'],
+        'referrer_id'    => ['type' => 'i', 'strict' => true, 'def' => 0, 'min' => 1],
+        'disabled'       => ['type' => 'b', 'def' => 0],
+        'flagChangePass' => ['type' => 'b', 'def' => 1],
+    ];
     /** @var array List of tables that connect this to another table */
-    protected static $joiners = array(
+    protected static $joiners = [
         'Role' => G_DB_TABL.'Roles_Logins',
-    );
+    ];
 
     /** @var string A regex for determining valid loginnames */
     protected static $labelRE = '^\w[\w\_\-\@\.\d]+$';
     /** @var array Cache the Roles this Login has */
-    protected $roles = array();
+    protected $roles = [];
 
     /**
      * Wrap the parent constructor and set roles if passed
@@ -74,13 +92,12 @@ class Login extends Record {
     public function __construct($a = null, $b = null) {
         if ('' == static::$query) {
             $keys          = array_keys(static::$vars);
-            static::$query = 'SELECT t.`'.join('`, t.`', $keys).'`, '
-                .'GROUP_CONCAT(r.`label`) as `roles`'
-                .' FROM `'.static::$table.'` t'
-                .' LEFT JOIN `'.static::getTable('Role').'` rl'
-                .' ON t.`login_id` = rl.`login_id`'
-                .' LEFT JOIN `'.Role::getTable().'` r'
-                .' ON r.`role_id` = rl.`role_id`';
+            static::$query = "
+SELECT t.`".join('`, t.`', $keys)."`, GROUP_CONCAT(r.`label`) as `roles`
+FROM `".static::$table."` t
+    LEFT JOIN `".static::getTable('Role')."` rl ON t.`login_id` = rl.`login_id`
+    LEFT JOIN `".Role::getTable()."` r ON r.`role_id` = rl.`role_id`
+";
         }
         parent::__construct($a, $b);
         if (is_array($a) && isset($a['roles'])) {
@@ -95,11 +112,12 @@ class Login extends Record {
      *
      * @return array Remaining unprocesed values
      */
-    public function onload(array $row = array()) {
+    public function onload(array $row = []) {
         if (isset($row['roles'])) {
             $this->roles = explode(',', $row['roles']);
             unset($row['roles']);
         }
+
         return $row;
     }
 
@@ -110,7 +128,7 @@ class Login extends Record {
      * @return void
      */
     public function oninsert() {
-        $this->__set('dateCreated', NOW);
+        $this->__set('created_uts', NOW);
         if ($this->__get('referrer_id') < 1) {
             $this->__set('referrer_id', G::$S->Login->login_id);
         }
@@ -123,10 +141,10 @@ class Login extends Record {
      * @return void
      */
     public function onupdate() {
-        $a = array('dateLogIn', 'dateLogout', 'dateActive', 'dateModified', 'dateCreated', 'lastIP');
+        $a = ['login_uts', 'logout_uts', 'active_uts', 'edited_uts', 'created_uts', 'lastIP'];
         foreach (static::$vars as $k => $v) {
             if ($this->vals[$k] != $this->DBvals[$k] && !in_array($k, $a)) {
-                $this->__set('dateModified', NOW);
+                $this->__set('edited_uts', NOW);
                 break;
             }
         }
@@ -165,6 +183,7 @@ class Login extends Record {
                 $this->vals['loginname'] = substr($a[0], 0, static::$vars['loginname']['max']);
             }
         }
+
         return $this->vals['loginname'];
     }
 
@@ -181,6 +200,7 @@ class Login extends Record {
                 $this->vals['password'] = PasswordHasher::hash_password($a[0]);
             }
         }
+
         return $this->vals['password'];
     }
 
@@ -204,8 +224,10 @@ class Login extends Record {
         if ($this->__get('referrer_id') > 0) {
             $referrer = new Login($this->__get('referrer_id'));
             G::build(DataBroker::class)->load($referrer);
+
             return $referrer->loginname;
         }
+
         return '';
     }
 
@@ -217,10 +239,11 @@ class Login extends Record {
     public static function initials() {
         // get login counts per letter
         $letters = array_fill_keys(range('A', 'Z'), 0);
-        $query = "SELECT UPPER(LEFT(loginname, 1)), count(loginname)"
-            ." FROM `".static::$table."`"
-            ." GROUP BY UPPER(LEFT(loginname, 1))"
-        ;
+        $query   = "
+SELECT UPPER(LEFT(loginname, 1)), count(loginname)
+FROM `".static::$table."`
+GROUP BY UPPER(LEFT(loginname, 1))
+";
 
         if (false !== $result = G::$m->query($query)) {
             while ($row = $result->fetch_array()) {
@@ -241,20 +264,23 @@ class Login extends Record {
      */
     public static function forInitial($c = null) {
         if (strlen($c) < 1) {
-            return array();
+            return [];
         }
-        $query = "SELECT t.`login_id`, t.`loginname`"
-            ." FROM `".static::$table."` t"
-            ." WHERE `loginname` LIKE '".G::$m->escape_string($c)."%'"
-            ." ORDER BY `loginname`";
+        $query = "
+SELECT t.`login_id`, t.`loginname`
+FROM `".static::$table."` t
+WHERE `loginname` LIKE '".G::$m->escape_string($c)."%'
+ORDER BY `loginname`
+";
         if (false === $result = G::$m->query($query)) {
             return false;
         }
         if (0 == $result->num_rows) {
             $result->close();
-            return array();
+
+            return [];
         }
-        $a = array();
+        $a = [];
         while ($row = $result->fetch_assoc()) {
             $a[$row[static::$pkey]] = new static($row);
         }
@@ -278,12 +304,13 @@ class Login extends Record {
         }
 
         // Selects the identities that use the given email address
-        $query = "SELECT `login_id`, `loginname`"
-            ." FROM `".self::$table."`"
-            ." WHERE `email` = '$email'"
-            ." ORDER BY `login_id`"
-        ;
-        $result = G::$m->queryToArray($query, 'login_id');
+        $query  = "
+SELECT `login_id`, `loginname`
+FROM `".self::$table."`
+WHERE `email` = '$email'
+ORDER BY `login_id`
+";
+        $result = G::$m->queryToArray($query, static::$pkey);
 
         return $result;
     }

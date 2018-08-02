@@ -82,6 +82,7 @@ class Runtime {
             date_default_timezone_set(G::$G['timezone']);
         }
         define('VERSION', G::$G['VERSION']);
+        define('G_DB_TABL', G::$G['db']['tabl']);
     }
 
     public function init_mysqli() {
@@ -118,7 +119,6 @@ class Runtime {
                 G::$m->readonly = true;
             }
         }
-        define('G_DB_TABL', G::$G['db']['tabl']);
 
         // If we could not connect to database, display appropriate error
         if (!G::$M->isOpen()) {

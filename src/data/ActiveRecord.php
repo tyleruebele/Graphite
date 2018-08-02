@@ -26,7 +26,7 @@ namespace Stationer\Graphite\data;
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
  */
-abstract class Record extends PassiveRecord {
+abstract class ActiveRecord extends PassiveRecord {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 
@@ -309,7 +309,7 @@ abstract class Record extends PassiveRecord {
      * @param int $id Numeric id to SELECT record for
      *
      * @deprecated
-     * @see Record::byPK
+     * @see ActiveRecord::byPK
      *
      * @return object Object for specified ID
      */
@@ -325,7 +325,7 @@ abstract class Record extends PassiveRecord {
      *
      * @param int $val Numeric id to SELECT record for
      *
-     * @return bool|Record False on failure or Record object for specified PKey
+     * @return bool|ActiveRecord False on failure or Record object for specified PKey
      */
     public static function byPK($val) {
         trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);

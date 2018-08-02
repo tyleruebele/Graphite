@@ -46,7 +46,7 @@ interface IDataProvider {
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return Record|array Found records
+     * @return ActiveRecord|array Found records
      */
     public function byPK($class, $pkey);
 

@@ -181,7 +181,7 @@ class DataBroker implements IDataProvider {
      * @return null|IDataProvider
      */
     public static function getDataProviderForClass($class) {
-        if (is_object($class) && is_a($class, 'PassiveRecord')) {
+        if (is_object($class) && is_a($class, PassiveRecord::class)) {
             $class = get_class($class);
         }
 

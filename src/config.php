@@ -70,8 +70,8 @@ G::$G['db']['ro'] = array(
 );
 
 G::$G['db']['ProviderDict'] = array(
-    'DataModel' => 'MySQLDataProvider',
-    'Report'    => 'ReportDataProvider',
+    \Stationer\Graphite\data\DataModel::class => \Stationer\Graphite\data\MySQLDataProvider::class,
+    \Stationer\Graphite\data\Report::class    => \Stationer\Graphite\data\ReportDataProvider::class,
 );
 /** **************************************************************************
  * /Database settings

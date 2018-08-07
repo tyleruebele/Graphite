@@ -43,7 +43,7 @@ class MysqlDataProvider extends DataProvider {
     public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
-        if (!is_a($Model, 'PassiveRecord')) {
+        if (!is_a($Model, PassiveRecord::class)) {
             trigger_error('Supplied class "'.$class.'" name does not extend PassiveRecord', E_USER_ERROR);
         }
 

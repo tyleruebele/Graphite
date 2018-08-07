@@ -75,7 +75,7 @@ class Login extends PassiveRecord {
     ];
     /** @var array List of tables that connect this to another table */
     protected static $joiners = [
-        'Role' => G_DB_TABL.'Roles_Logins',
+        'Role' => G_DB_TABL.'Role_Login',
     ];
 
     /** @var string A regex for determining valid loginnames */

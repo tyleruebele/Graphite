@@ -54,7 +54,7 @@ class Role extends PassiveRecord {
     ];
     /** @var array List of tables that connect this to another table */
     protected static $joiners = [
-        'Login' => G_DB_TABL.'Roles_Logins',
+        'Login' => G_DB_TABL.'Role_Login',
     ];
 
     /**

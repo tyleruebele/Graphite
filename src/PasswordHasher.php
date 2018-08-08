@@ -82,11 +82,11 @@ class PasswordHasher implements IPasswordHasher {
         if (!is_array(G::$G['SEC']['hash_class'])
             || !isset(G::$G['SEC']['hash_class'][0])
             || !class_exists(G::$G['SEC']['hash_class'][0])
-            || !in_array('IPasswordHasher',
+            || !in_array(IPasswordHasher::class,
                          class_implements(G::$G['SEC']['hash_class'][0]))
             || get_class() == G::$G['SEC']['hash_class'][0]
         ) {
-            G::$G['SEC']['hash_class'][0] = 'SHA1PasswordHasher';
+            G::$G['SEC']['hash_class'][0] = SHA1PasswordHasher::class;
         }
         $class = G::$G['SEC']['hash_class'][0];
 
@@ -109,7 +109,7 @@ class PasswordHasher implements IPasswordHasher {
         }
         foreach (G::$G['SEC']['hash_class'] as $class) {
             if (class_exists(G::$G['SEC']['hash_class'][0])
-                && in_array('IPasswordHasher',
+                && in_array(IPasswordHasher::class,
                          class_implements(G::$G['SEC']['hash_class'][0]))
                 && get_class() != G::$G['SEC']['hash_class'][0]
                 && $class::test_password($password, $hash)
@@ -134,7 +134,7 @@ class PasswordHasher implements IPasswordHasher {
         }
         foreach (G::$G['SEC']['hash_class'] as $class) {
             if (class_exists(G::$G['SEC']['hash_class'][0])
-                && in_array('IPasswordHasher',
+                && in_array(IPasswordHasher::class,
                          class_implements(G::$G['SEC']['hash_class'][0]))
                 && get_class() != G::$G['SEC']['hash_class'][0]
                 && $class::is_hash($hash)

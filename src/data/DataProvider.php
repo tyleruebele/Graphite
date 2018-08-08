@@ -40,7 +40,7 @@ abstract class DataProvider implements IDataProvider {
         /** @var PassiveRecord $class */
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
-        if (!is_a($Model, 'PassiveRecord')) {
+        if (!is_a($Model, PassiveRecord::class)) {
             trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
         }
 
@@ -82,7 +82,7 @@ abstract class DataProvider implements IDataProvider {
         /** @var PassiveRecord $class */
         /** @var PassiveRecord $Model */
         $Model = G::build($class, $pkey);
-        if (!is_a($Model, 'PassiveRecord')) {
+        if (!is_a($Model, PassiveRecord::class)) {
             trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
         }
 

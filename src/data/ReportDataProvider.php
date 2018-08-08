@@ -40,7 +40,7 @@ class ReportDataProvider extends DataProvider {
     public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var Report $Model */
         $Model = G::build($class);
-        if (!is_a($Model, 'Report')) {
+        if (!is_a($Model, Report::class)) {
             trigger_error('Supplied class name does not extend Report', E_USER_ERROR);
         }
 
@@ -68,7 +68,7 @@ class ReportDataProvider extends DataProvider {
     public function count($class, array $params = array()) {
         /** @var Report $Model */
         $Model = G::build($class);
-        if (!is_a($Model, 'Report')) {
+        if (!is_a($Model, Report::class)) {
             trigger_error('Supplied class name does not extend Report', E_USER_ERROR);
         }
 

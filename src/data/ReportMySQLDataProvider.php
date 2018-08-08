@@ -40,7 +40,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveReport $Model */
         $Model = G::build($class);
-        if (!is_a($Model, 'PassiveReport')) {
+        if (!is_a($Model, PassiveReport::class)) {
             trigger_error('Supplied class name does not extend PassiveReport', E_USER_ERROR);
         }
 

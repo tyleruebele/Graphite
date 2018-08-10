@@ -28,7 +28,7 @@ G::$G['MODE'] = 'prd';
 G::$G['VERSION'] = date('Y.m.d');
 // includePath relative to SITE
 // each class will append it's own sub directory to each path
-G::$G['includePath'] = '/vendor/stationer/barrel/src;/vendor/stationer/pencil/src';
+G::$G['includePath'] = '';
 G::$G['language'] = 'en_us';
 G::$G['namespaces'] = [
     '',
@@ -36,13 +36,6 @@ G::$G['namespaces'] = [
     '\\Stationer\\Graphite\\',
     '\\Stationer\\Graphite\\data\\',
     '\\Stationer\\Graphite\\models\\',
-    '\\Stationer\\Barrel\\',
-    '\\Stationer\\Barrel\\data\\',
-    '\\Stationer\\Barrel\\models\\',
-    '\\Stationer\\Barrel\\controllers\\',
-    '\\Stationer\\Pencil\\',
-    '\\Stationer\\Pencil\\models\\',
-    '\\Stationer\\Pencil\\controllers\\',
 ];
 
 // enable the installer -- reverse this when installed
@@ -204,58 +197,4 @@ G::$G['VIEW']['_Lbl'] = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'to the page yo
 
 /** **************************************************************************
  * /Settings for the View
- ****************************************************************************/
-
-
-/** **************************************************************************
- * Per-Application Default Settings
- *  Check each ^directory/ for a config
- *  Each application config should limit itself to G::$G[APPNAME]
- ****************************************************************************/
-$_dir = opendir(SITE);
-if ($_dir) {
-    while (false !== $_file = readdir($_dir)) {
-        if ('^' == $_file[0] && '^' != $_file) {
-            if (file_exists(SITE.'/'.$_file.'/config.php')) {
-                include_once SITE.'/'.$_file.'/config.php';
-            }
-        }
-    }
-}
-/** **************************************************************************
- * /Per-Application Settings
- ****************************************************************************/
-
-
-/** **************************************************************************
- * Per-Domain Settings for multi-domain sites
- *  If you are not hosting a site on multiple domains, you can cautiously
- *  use this file as your only configuration file
- * We'll check for two files
- *  1. 'secrets.' which should not be in your repo, and contains credentials
- *  2. 'config.' which could be in your repo, and contains general configs
- * We'll check two places
- *  1. [webroot]/../siteConfigs/ which houses config files out of webroot
- *  2. [webroot] which is webroot
- * We'll check two versions of the current domain
- *  1. The SERVER_NAME according to $_SERVER['SERVER_NAME']
- *  2. The directory name of [webroot], applicable in most vhosting setups
- ****************************************************************************/
-$tmppath = explode('/', SITE);
-foreach (['secrets.','config.'] as $tmpfile) {
-    foreach ([$_SERVER['SERVER_NAME'], end($tmppath)] as $tmpdomain) {
-        if (file_exists(dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
-            include_once dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
-            continue 2;
-        } elseif (file_exists(SITE.'/'.$tmpfile.$tmpdomain.'.php')) {
-            include_once SITE.'/'.$tmpfile.$tmpdomain.'.php';
-            continue 2;
-        }
-    }
-}
-unset($tmppath);
-unset($tmpfile);
-unset($tmpdomain);
-/** **************************************************************************
- * /Per-Domain Settings for multi-domain sites
  ****************************************************************************/

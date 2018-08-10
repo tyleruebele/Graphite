@@ -67,7 +67,7 @@ class Runtime {
         define('SITE', $this->guessSiteRoot());
         $this->generateServerDefauts();
 
-        require_once __DIR__.'/config.php';
+        $this->loadConfigs();
 
         G::$Factory = new Factory();
         DataBroker::setDict(G::$G['db']['ProviderDict']);
@@ -218,5 +218,68 @@ class Runtime {
         }
 
         return $root;
+    }
+
+    /**
+     * Load configs
+     *
+     * @return void
+     */
+    public function loadConfigs() {
+        // Load the initial Graphite config
+        require_once __DIR__.'/config.php';
+        // Load the site config to get the include path
+        $this->loadSiteConfigs();
+        // Load module configs from that include path
+        $this->loadModuleConfigs();
+        // Load the site config again to support overriding module configs
+        $this->loadSiteConfigs();
+    }
+
+    /**
+     * Per-Domain Settings for multi-domain sites
+     *  If you are not hosting a site on multiple domains, you can cautiously
+     *  use this file as your only configuration file
+     * We'll check for two files
+     *  1. 'secrets.' which should not be in your repo, and contains credentials
+     *  2. 'config.' which could be in your repo, and contains general configs
+     * We'll check two places
+     *  1. [webroot]/../siteConfigs/ which houses config files out of webroot
+     *  2. [webroot] which is webroot
+     * We'll check two versions of the current domain
+     *  1. The SERVER_NAME according to $_SERVER['SERVER_NAME']
+     *  2. The directory name of [webroot], applicable in most vhosting setups
+     *
+     * @return void
+     */
+    public function loadSiteConfigs() {
+        $tmppath = explode('/', SITE);
+        foreach (['secrets.', 'config.'] as $tmpfile) {
+            foreach ([$_SERVER['SERVER_NAME'], end($tmppath)] as $tmpdomain) {
+                if (file_exists(dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
+                    include dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
+                    continue 2;
+                } elseif (file_exists(SITE.'/'.$tmpfile.$tmpdomain.'.php')) {
+                    include SITE.'/'.$tmpfile.$tmpdomain.'.php';
+                    continue 2;
+                }
+            }
+        }
+    }
+
+    /**
+     * Per-Application Default Settings
+     *  Check each includePath directory for a config
+     *  Each application config should limit itself to G::$G[APPNAME]
+     *
+     * @return void
+     */
+    public function loadModuleConfigs() {
+        foreach (explode(';', G::$G['includePath']) as $path) {
+            $path = trim($path, '/');
+            if (file_exists(SITE.'/'.$path.'/config.php')) {
+                include_once SITE.'/'.$path.'/config.php';
+            }
+        }
     }
 }

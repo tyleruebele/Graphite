@@ -1,15 +1,14 @@
 <?php
 /**
  * PassiveRecord - core database record class
- * File : /^/lib/PassiveRecord.php
+ * File : /src/data/PassiveRecord.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -20,13 +19,12 @@ use Stationer\Graphite\G;
  * PassiveRecord class - used as a base class for Record Model classes
  *  for use with a DataProvider
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/mysqli_.php
- * @see      /^/lib/DataModel.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/mysqli_.php
+ * @see      /src/data/DataModel.php
  * @property string  $table
  * @property string  $pkey
  * @property array[] $vars

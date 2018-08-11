@@ -1,15 +1,14 @@
 <?php
 /**
  * ReportMySQLDataProvider - Provide report data from MySQL
- * File : /^/lib/ReportMySQLDataProvider.php
+ * File : /src/data/ReportMySQLDataProvider.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -17,12 +16,11 @@ namespace Stationer\Graphite\data;
 /**
  * ReportMySQLDataProvider class - Fetches reports for PassiveReport models
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/mysqli_.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/mysqli_.php
  */
 abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     /**

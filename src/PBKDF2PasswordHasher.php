@@ -1,15 +1,14 @@
 <?php
 /**
  * PBKDF2PasswordHasher - PBKDF2 Password Hashing plugin
- * File : /^/lib/PBKDF2PasswordHasher.php
+ * File : /src/PBKDF2PasswordHasher.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -17,12 +16,11 @@ namespace Stationer\Graphite;
 /**
  * PBKDF2PasswordHasher class - PBKDF2 Password Hashing plugin
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/PasswordHasher.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/PasswordHasher.php
  */
 class PBKDF2PasswordHasher implements IPasswordHasher {
     /**

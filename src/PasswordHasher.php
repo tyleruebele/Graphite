@@ -1,15 +1,14 @@
 <?php
 /**
  * Password Hashing
- * File : /^/lib/PasswordHasher.php
+ * File : /src/PasswordHasher.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -17,11 +16,10 @@ namespace Stationer\Graphite;
 /**
  * IPasswordHasher interface - Interface for Password Hashing plugins
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 interface IPasswordHasher {
     /**
@@ -56,11 +54,10 @@ interface IPasswordHasher {
 /**
  * PasswordHasher class - Wrapper for Password Hashing plugins
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 class PasswordHasher implements IPasswordHasher {
     /**

@@ -1,4 +1,15 @@
 <?php
+/**
+ * Runtime - Main runtime object
+ * File : /src/Runtime.php
+ *
+ * PHP version 7.0
+ *
+ * @package  Stationer\Graphite
+ * @author   Tyler Uebele
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ */
 
 namespace Stationer\Graphite;
 
@@ -7,6 +18,14 @@ use Stationer\Graphite\data\mysqli_;
 
 require_once __DIR__.'/functions.php';
 
+/**
+ * Runtime class - Graphite's root invoker
+ *
+ * @package  Stationer\Graphite
+ * @author   Tyler Uebele
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ */
 class Runtime {
     /** @var Runtime $instance */
     private static $instance = null;
@@ -37,6 +56,8 @@ class Runtime {
 
     /**
      * Prepare and invoke the Controller and View
+     *
+     * @return void
      */
     public function main() {
         $this->Profiler->mark('init');
@@ -60,6 +81,11 @@ class Runtime {
         G::$V->output();
     }
 
+    /**
+     * Initialize all Graphite configs
+     *
+     * @return void
+     */
     public function init() {
         $this->Profiler->mark(__METHOD__);
 
@@ -85,6 +111,11 @@ class Runtime {
         define('G_DB_TABL', G::$G['db']['tabl']);
     }
 
+    /**
+     * Initialize Mysqli connection
+     *
+     * @return void
+     */
     public function init_mysqli() {
         // if no DB host was specified, don't load DB or DB-based Security
         if ('' == G::$G['db']['host']) {
@@ -135,7 +166,9 @@ class Runtime {
     }
 
     /**
-     * Load Security
+     * Initialize Security module, authenticate user
+     *
+     * @return void
      */
     public function init_Security() {
         $this->Profiler->mark(__METHOD__);
@@ -157,6 +190,8 @@ class Runtime {
 
     /**
      * Load per-application includeme.php files
+     *
+     * @return void
      */
     public function do_includes() {
         $this->Profiler->mark(__METHOD__);
@@ -177,6 +212,8 @@ class Runtime {
     /**
      * Create default values for missing $_SERVER variables
      * This is most useful for running scripts from CLI with `php -f`
+     *
+     * @return void
      */
     public function generateServerDefauts() {
         if (!isset($_SERVER['SERVER_NAME'])) {

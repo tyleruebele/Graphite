@@ -1,15 +1,14 @@
 <?php
 /**
  * Controller - Base class for all controllers
- * File : /^/lib/Controller.php
+ * File : /src/Controller.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -18,16 +17,15 @@ use Stationer\Graphite\data\IDataProvider;
 
 /**
  * Controller class - used as a base class for MVC Controller classes
- * A trivial example extension is in /^/controllers/DefaultController.php
+ * A trivial example extension is in [Stationer\Barrel]/src/controllers/DefaultController.php
  * Controllers are dispatched by the Dispatcher
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/Dispatcher.php
- * @see      /^/controllers/DefaultController.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/Dispatcher.php
+ * @see      https://github.com/stationer/Barrel/blob/master/src/controllers/DefaultController.php
  */
 abstract class Controller {
     /** @var string Default action */

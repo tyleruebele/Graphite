@@ -1,15 +1,14 @@
 <?php
 /**
  * Security - core Security/Session manager
- * File : /^/lib/Security.php
+ * File : /src/Security.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -21,12 +20,11 @@ use Stationer\Graphite\data\DataBroker;
 /**
  * Security class - for authenticating and managing current user.
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/models/Login.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/models/Login.php
  *
  * @property-read Login $Login
  */

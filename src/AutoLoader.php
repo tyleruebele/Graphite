@@ -4,11 +4,10 @@
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Cris Bettis <apt142@gmail.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  *
  * @see      http://jes.st/2011/phpunit-bootstrap-and-autoloading-classes/
  */
@@ -21,11 +20,10 @@ namespace Stationer\Graphite;
  * Caches a directory list and then uses that list to auto include files as
  * necessary.
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Cris Bettis <apt142@gmail.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 class AutoLoader {
     /** @var array Registry of known class names */

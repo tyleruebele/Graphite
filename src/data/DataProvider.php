@@ -1,15 +1,14 @@
 <?php
 /**
  * DataProvider - Base class for DataProviders
- * File : /^/lib/DataProvider.php
+ * File : /src/data/DataProvider.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -19,13 +18,12 @@ use Stationer\Graphite\G;
 /**
  * DataProvider class - provides partial functionality of DataProviders
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/mysqli_.php
- * @see      /^/lib/PassiveRecord.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/mysqli_.php
+ * @see      /src/data/PassiveRecord.php
  */
 abstract class DataProvider implements IDataProvider {
     /**

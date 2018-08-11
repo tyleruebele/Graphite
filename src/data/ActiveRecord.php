@@ -1,15 +1,14 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * ActiveRecord - core database active record class file
+ * File : /src/data/ActiveRecord.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -18,13 +17,12 @@ namespace Stationer\Graphite\data;
  * Record class - used as a base class for Active Record Model classes
  *  an example extension is at bottom of file
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/mysqli_.php
- * @see      /^/lib/DataModel.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/mysqli_.php
+ * @see      /src/data/DataModel.php
  */
 abstract class ActiveRecord extends PassiveRecord {
     /** @var array Instance DB values of vars defined in $vars */

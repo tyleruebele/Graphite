@@ -1,15 +1,14 @@
 <?php
 /**
  * Profiler - Stores runtime checkpoint metrics
- * File : /^/lib/Profiler.php
+ * File : /src/Profiler.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -17,11 +16,10 @@ namespace Stationer\Graphite;
 /**
  * Profiler class - Stores runtime checkpoint metrics
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 class Profiler {
     /** @var Profiler $instance */

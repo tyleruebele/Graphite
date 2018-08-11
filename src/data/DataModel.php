@@ -1,15 +1,14 @@
 <?php
 /**
  * DataModel - Shared functionality for data access and sanitization
- * File : /^/lib/DataModel.php
+ * File : /src/data/DataModel.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -18,13 +17,12 @@ namespace Stationer\Graphite\data;
  * DataModel class - used as a base class for Record and Report data classes
  * Shared Functionality of Record and Report base classes
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/Record.php
- * @see      /^/lib/Report.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/PassiveRecord.php
+ * @see      /src/data/Report.php
  */
 abstract class DataModel implements \ArrayAccess {
     /** @var string Select query used by load() */

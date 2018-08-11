@@ -1,15 +1,14 @@
 <?php
 /**
  * Login - Login (user) AR class
- * File : /^/models/Login.php
+ * File : /src/models/Login.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\models;
@@ -22,12 +21,11 @@ use Stationer\Graphite\data\PassiveRecord;
 /**
  * Login class - for managing site users, including current user.
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/Record.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/PassiveRecord.php
  * @property int    $login_id
  * @property int    $created_uts
  * @property string $updated_dts

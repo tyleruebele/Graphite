@@ -1,15 +1,14 @@
 <?php
 /**
  * SHA1PasswordHasher - Simple SHA1 based Password Hashing plugin
- * File : /^/lib/SHA1PasswordHasher.php
+ * File : /src/SHA1PasswordHasher.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -17,12 +16,11 @@ namespace Stationer\Graphite;
 /**
  * SHA1PasswordHasher class - Simple SHA1 based Password Hashing plugin
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/PasswordHasher.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/PasswordHasher.php
  */
 class SHA1PasswordHasher implements IPasswordHasher {
     /**

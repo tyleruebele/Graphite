@@ -1,15 +1,14 @@
 <?php
 /**
  * PassiveReport - Base Class for Report Models
- * File : /^/lib/PassiveReport.php
+ * File : /src/data/PassiveReport.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -17,12 +16,11 @@ namespace Stationer\Graphite\data;
 /**
  * PassiveReport class - For reporting that runs through a DataProvider
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/DataModel.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/DataModel.php
  */
 abstract class PassiveReport extends DataModel {
     /** @var array resulting data produced by load() */

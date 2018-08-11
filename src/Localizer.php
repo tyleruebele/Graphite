@@ -4,11 +4,10 @@
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Cris Bettis <apt142@gmail.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite;
@@ -18,11 +17,10 @@ namespace Stationer\Graphite;
  *
  * Interface for translating values into a local accepted unit/language.
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Cris Bettis <apt142@gmail.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 class Localizer {
     /** @var string Current language to do includes off of. */

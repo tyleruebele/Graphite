@@ -1,15 +1,14 @@
 <?php
 /**
  * LoginLog - AR class for logging log-ins
- * File : /^/models/LoginLog.php
+ * File : /src/models/LoginLog.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\models;
@@ -19,12 +18,11 @@ use Stationer\Graphite\data\PassiveRecord;
 /**
  * LoginLog class - AR class for logging log-ins
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   LoneFry <dev@lonefry.com>
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
- * @see      /^/lib/Record.php
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
+ * @see      /src/data/PassiveRecord.php
  * @property int    loginlog_id
  * @property int    created_uts
  * @property string updated_dts

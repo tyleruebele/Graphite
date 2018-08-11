@@ -1,15 +1,14 @@
 <?php
 /**
  * DataBroker - Core Data Broker between applications and Data Providers
- * File : /^/lib/DataBroker.php
+ * File : /src/data/DataBroker.php
  *
  * PHP version 7.0
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 
 namespace Stationer\Graphite\data;
@@ -20,11 +19,10 @@ require 'IDataProvider.php';
 /**
  * DataBroker class - Delegates data requests to appropriate DataProvider
  *
- * @category Graphite
- * @package  Core
+ * @package  Stationer\Graphite
  * @author   Tyler Uebele
- * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
- * @link     http://g.lonefry.com
+ * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
+ * @link     https://github.com/stationer/Graphite
  */
 class DataBroker implements IDataProvider {
     /** @var array $Providers A cache of lazy-loaded DataProviders */

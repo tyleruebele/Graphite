@@ -186,13 +186,16 @@ class Security {
     /**
      * Test if current logged in user has Role by passing test to Login
      *
-     * @param string $s role name
+     * @param string $role role name
      *
      * @return bool true if current Login has role, false otherwise
      */
-    public function roleTest($s) {
+    public function roleTest($role) {
+        if (false === $role) {
+            return true;
+        }
         if (false !== $this->Login && Login::class == get_class($this->Login)) {
-            return $this->Login->roleTest($s);
+            return $this->Login->roleTest($role);
         }
         return false;
     }

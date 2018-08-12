@@ -60,14 +60,7 @@ class Runtime {
      * @return void
      */
     public function main() {
-        $this->Profiler->mark('init');
         $this->init();
-        $this->init_mysqli();
-        $this->init_Security();
-        $this->do_includes();
-        G::$C = new Dispatcher(G::$G['CON']);
-        G::$V = new View(G::$G['VIEW']);
-        $this->Profiler->stop('init');
 
         $this->Profiler->mark('Controller');
         G::$C->Act();
@@ -88,6 +81,22 @@ class Runtime {
      * @return void
      */
     public function init() {
+        $this->Profiler->mark('init');
+        $this->init_core();
+        $this->init_mysqli();
+        $this->init_Security();
+        $this->init_modules();
+        G::$C = new Dispatcher(G::$G['CON']);
+        G::$V = new View(G::$G['VIEW']);
+        $this->Profiler->stop('init');
+    }
+
+    /**
+     * Initialize all Graphite configs
+     *
+     * @return void
+     */
+    public function init_core() {
         $this->Profiler->mark(__METHOD__);
 
         // the root of this website
@@ -194,7 +203,7 @@ class Runtime {
      *
      * @return void
      */
-    public function do_includes() {
+    public function init_modules() {
         $this->Profiler->mark(__METHOD__);
 
         if (isset(G::$G['includePath'])) {

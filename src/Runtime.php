@@ -64,6 +64,7 @@ class Runtime {
         $this->init();
         $this->init_mysqli();
         $this->init_Security();
+        $this->do_includes();
         G::$C = new Dispatcher(G::$G['CON']);
         G::$V = new View(G::$G['VIEW']);
         $this->Profiler->stop('init');

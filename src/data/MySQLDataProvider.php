@@ -1,7 +1,7 @@
 <?php
 /**
- * MysqlDataProvider - Provide data from MySQL
- * File : /src/data/MysqlDataProvider.php
+ * MySQLDataProvider - Provide data from MySQL
+ * File : /src/data/MySQLDataProvider.php
  *
  * PHP version 7.0
  *
@@ -16,7 +16,7 @@ namespace Stationer\Graphite\data;
 use Stationer\Graphite\G;
 
 /**
- * MysqlDataProvider class - Runs CRUD to MySQL for PassiveRecord models
+ * MySQLDataProvider class - Runs CRUD to MySQL for PassiveRecord models
  *
  * @package  Stationer\Graphite
  * @author   Tyler Uebele
@@ -25,7 +25,7 @@ use Stationer\Graphite\G;
  * @see      /src/data/mysqli_.php
  * @see      /src/data/PassiveRecord.php
  */
-class MysqlDataProvider extends DataProvider {
+class MySQLDataProvider extends DataProvider {
     /**
      * Search for records of type $class according to search params $params
      * Order results by $orders and limit results by $count, $start

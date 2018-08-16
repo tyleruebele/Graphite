@@ -285,10 +285,15 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
         }
         if (!empty(static::$keys)) {
             foreach (static::$keys as $key) {
-                if (is_array($key)) {
-                    $key = implode('`,`', $key);
+                if (!is_array($key)) {
+                    $key = [$key];
                 }
-                $query .= "    KEY (`$key`),\n";
+                foreach ($key as $i => $field) {
+                    if ('`' != $field[0]) {
+                        $key[$i] = "`$field`";
+                    }
+                }
+                $query .= "    KEY (".implode(',', $key)."),\n";
             }
         }
         foreach (['updated_dts','recordChanged'] as $key) {
@@ -298,10 +303,15 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
         }
         if (!empty(static::$ukeys)) {
             foreach (static::$ukeys as $key) {
-                if (is_array($key)) {
-                    $key = implode('`,`', $key);
+                if (!is_array($key)) {
+                    $key = [$key];
                 }
-                $query .= "    UNIQUE KEY (`$key`),\n";
+                foreach ($key as $i => $field) {
+                    if ('`' != $field[0]) {
+                        $key[$i] = "`$field`";
+                    }
+                }
+                $query .= "    UNIQUE KEY (".implode(',', $key)."),\n";
             }
         }
         $query .= "    PRIMARY KEY(`".static::$pkey."`)\n);";

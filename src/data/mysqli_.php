@@ -257,6 +257,15 @@ class mysqli_ extends mysqli {
     }
 
     /**
+     * Return logged queries
+     *
+     * @return array query log
+     */
+    public function getLastQuery() {
+        return end(self::$_aQueries);
+    }
+
+    /**
      * Getter for read-only properties
      *
      * @param string $k property to get

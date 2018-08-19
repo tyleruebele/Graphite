@@ -13,6 +13,7 @@
 
 namespace Stationer\Graphite\data;
 
+use Stationer\Graphite\G;
 /**
  * ReportDataProvider class - Fetches reports for Report models
  *

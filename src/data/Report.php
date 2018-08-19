@@ -13,6 +13,8 @@
 
 namespace Stationer\Graphite\data;
 
+use Stationer\Graphite\G;
+
 /**
  * Report class - For reporting that is not conducive to Active Record Model
  *
@@ -25,19 +27,19 @@ namespace Stationer\Graphite\data;
  */
 abstract class Report extends DataModel {
     /** @var array resulting data produced by load() */
-    protected $_data   = array();
+    protected $_data = [];
 
     /** @var int OFFSET of query result set */
-    protected $_start  = 0;
+    protected $_start = 0;
 
     /** @var int LIMIT of query result set */
-    protected $_count  = 10000;
+    protected $_count = 10000;
 
     /** @var string ORDER BY of query; must be in $this->_orders array */
-    protected $_order  = null;
+    protected $_order = null;
 
     /** @var array Whitelist of valid ORDER BY values */
-    protected $_orders = array();
+    protected $_orders = [];
 
     /** @var bool ASC/DESC specifier of ORDER BY; true is ASC, false is DESC */
     protected $_asc = true;
@@ -56,11 +58,11 @@ abstract class Report extends DataModel {
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b set defaults
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct($a = null, $b = null) {
         if (!isset(static::$query) || '' == static::$query) {
-            throw new Exception('Report class defined with no query.');
+            throw new \Exception('Report class defined with no query.');
         }
         parent::__construct($a, $b);
     }
@@ -79,7 +81,7 @@ abstract class Report extends DataModel {
      * @return bool false on failure
      */
     public function load() {
-        $this->_data = array();
+        $this->_data = [];
         // Build the WHERE clause of the report query based on set params
         $query = sprintf(static::$query, $this->_buildWhere());
 
@@ -109,6 +111,7 @@ abstract class Report extends DataModel {
         }
 
         $this->onload();
+
         return true;
     }
 
@@ -138,11 +141,11 @@ abstract class Report extends DataModel {
      * @return string Query WHERE clause
      */
     protected function _buildWhere() {
-        $where = array();
+        $where = [];
         foreach (static::$vars as $field => $props) {
             if (isset($this->vals[$field]) && null !== $this->vals[$field]) {
                 if ('a' === $props['type']) {
-                    $inList = $this->implodeArray(unserialize($this->$field));
+                    $inList  = $this->implodeArray(unserialize($this->$field));
                     $where[] = sprintf($props['sql'], $inList);
                 } elseif ('b' == static::$vars[$field]['type']) {
                     $where[] = sprintf($props['sql'], $this->vals[$field] ? "b'1'" : "b'0'");
@@ -169,13 +172,15 @@ abstract class Report extends DataModel {
      */
     protected function _runQueryOnSource($query) {
         $source = $this->getSource();
-        $MySql = mysqli_::buildForSource($source);
+        $MySql  = mysqli_::buildForSource($source);
         if (null != $MySql) {
             $result = $MySql->query($query);
-        } else if ($source === 'writer') {
-            $result = G::$M->query($query);
         } else {
-            $result = G::$m->query($query);
+            if ($source === 'writer') {
+                $result = G::$M->query($query);
+            } else {
+                $result = G::$m->query($query);
+            }
         }
 
         return $result;
@@ -189,7 +194,7 @@ abstract class Report extends DataModel {
      *
      * @return array|bool false on failure
      */
-    public function runQuery($query = '', $params = array()) {
+    public function runQuery($query = '', $params = []) {
         // Look for all {$variable} instances and replace with actual values.
         foreach ($params as $param => $value) {
             // Implode an array value
@@ -197,13 +202,13 @@ abstract class Report extends DataModel {
                 $value = $this->implodeArray($value);
             }
 
-            $query = str_replace('{' . $param . '}', $value, $query);
+            $query = str_replace('{'.$param.'}', $value, $query);
         }
 
-        $MySql = $this->getMySql();
+        $MySql  = $this->getMySql();
         $result = $MySql->query($query);
 
-        $data = array();
+        $data = [];
         if (!is_bool($result)) {
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row;
@@ -212,6 +217,7 @@ abstract class Report extends DataModel {
         } else {
             $data = $result;
         }
+
         return $data;
     }
 
@@ -235,14 +241,14 @@ abstract class Report extends DataModel {
      *
      * @return array Found records
      */
-    public function fetch(array $params = array(), array $orders = array(), $count = null, $start = 0) {
+    public function fetch(array $params = [], array $orders = [], $count = null, $start = 0) {
         if (count($params)) {
             $this->setAll($params);
         }
         if (count($orders)) {
-            $fields = array_keys($orders);
+            $fields       = array_keys($orders);
             $this->_order = array_shift($fields);
-            $this->_asc = array_shift($orders);
+            $this->_asc   = array_shift($orders);
         }
         if (null !== $count) {
             $this->_count = $count;
@@ -263,19 +269,20 @@ abstract class Report extends DataModel {
      *
      * @return int Found records
      */
-    public function count(array $params = array()) {
+    public function count(array $params = []) {
         if (count($params)) {
             $this->setAll($params);
         }
         if (empty(static::$countQuery)) {
-            $query = static::$query;
+            $query         = static::$query;
             static::$query = static::$countQuery;
-            $this->_order = null;
-            $this->_asc = true;
-            $this->_count = 10000;
-            $this->_start = 0;
+            $this->_order  = null;
+            $this->_asc    = true;
+            $this->_count  = 10000;
+            $this->_start  = 0;
             $this->load();
             static::$query = $query;
+
             return count($this->_data);
         }
 
@@ -305,18 +312,21 @@ abstract class Report extends DataModel {
             if (is_numeric($v)) {
                 $this->_start = (int)$v;
             }
+
             return $this->_start;
         }
         if ('_count' == $k) {
             if (is_numeric($v)) {
                 $this->_count = (int)$v;
             }
+
             return $this->_count;
         }
         if ('_order' == $k) {
             if (in_array($v, $this->_orders)) {
                 $this->_order = '`'.$v.'`';
             }
+
             return $this->_order;
         }
         if ('_asc' == $k) {
@@ -334,9 +344,10 @@ abstract class Report extends DataModel {
      */
     public function getMySql() {
         if (self::$mySql === null) {
-            $source = $this->getSource();
+            $source      = $this->getSource();
             self::$mySql = ifset(G::$M->buildForSource($source), G::$m);
         }
+
         return self::$mySql;
     }
 
@@ -352,6 +363,6 @@ abstract class Report extends DataModel {
             $array[$index] = G::$m->escape_string($value);
         }
 
-        return "'" . implode("', '", $array) . "'";
+        return "'".implode("', '", $array)."'";
     }
 }

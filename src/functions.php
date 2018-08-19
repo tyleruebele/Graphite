@@ -168,3 +168,19 @@ function array_keys_exist($keys, $search) {
 function html($s) {
     echo htmlspecialchars($s, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE);
 }
+
+/**
+ * Capture the output of var_dump() and return it as a string
+ *
+ * @param mixed $s value to dump
+ *
+ * @return string
+ */
+function ob_var_dump($s) {
+    ob_start();
+    // @codingStandardsIgnoreStart
+    var_dump($s);
+    // @codingStandardsIgnoreEnd
+
+    return ob_get_clean();
+}

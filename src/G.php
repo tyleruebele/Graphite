@@ -157,27 +157,13 @@ final class G {
      * @param mixed $v   value to var_dump
      * @param bool  $die whether to exit when done
      *
+     * @deprecated
+     *
      * @return void
      */
     public static function croak($v = null, $die = false) {
-        $d = debug_backtrace();
-        echo '<div class="G__croak">'
-            .'<pre class="G__croak_info"><b>'.__METHOD__.'()</b> called'
-            .(isset($d[1])
-                ? ' in <b>'.(isset($d[1]['class'])
-                    ? $d[1]['class'].$d[1]['type']
-                    : ''
-                    ).$d[1]['function'].'()</b>'
-                : '')
-            .' at <b>'.$d[0]['file'].':'.$d[0]['line'].'</b></pre>'
-            .'<hr><pre class="G__croak_value">';
-        // @codingStandardsIgnoreStart
-        var_dump($v);
-        // @codingStandardsIgnoreEnd
-        echo '</pre></div>';
-        if ($die) {
-            exit;
-        }
+        trigger_error("Call to deprecated method ".__METHOD__, E_USER_DEPRECATED);
+        \croak($v, $die);
     }
 
     /**

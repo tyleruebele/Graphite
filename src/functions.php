@@ -211,3 +211,32 @@ function ob_var_dump($s) {
 
     return ob_get_clean();
 }
+
+/**
+ * Emit invocation info, and passed value
+ *
+ * @param mixed $value   value to var_dump
+ * @param bool  $die whether to exit when done
+ *
+ * @return void
+ */
+function croak($value = null, $die = false) {
+    $debug = debug_backtrace();
+    echo '<div class="G__croak">'
+        .'<pre class="G__croak_info"><b>'.__METHOD__.'()</b> called'
+        .(isset($debug[1])
+            ? ' in <b>'.(isset($debug[1]['class'])
+                ? $debug[1]['class'].$debug[1]['type']
+                : ''
+            ).$debug[1]['function'].'()</b>'
+            : '')
+        .' at <b>'.$debug[0]['file'].':'.$debug[0]['line'].'</b></pre>'
+        .'<hr><pre class="G__croak_value">';
+    // @codingStandardsIgnoreStart
+    var_dump($value);
+    // @codingStandardsIgnoreEnd
+    echo '</pre></div>';
+    if ($die) {
+        exit;
+    }
+}

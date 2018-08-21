@@ -157,7 +157,7 @@ abstract class DataModel implements \ArrayAccess {
      *
      * @return array elements which were not used
      */
-    public function setAll($a, $guard = false) {
+    public function setAll($a, $guard = true) {
         foreach (static::$vars as $k => $v) {
             if (!isset($a[$k])) {
                 // field not passed

@@ -158,6 +158,33 @@ function array_keys_exist($keys, $search) {
     return [] == array_diff($keys, array_keys($search));
 }
 
+
+/**
+ * Searches through array to find positive integer values
+ *
+ * @param array $data Array of data being processed
+ *
+ * @return array Array of integers
+ */
+function array_filter_ids(array $data) {
+    // Array to be returned
+    $newData = [];
+
+    // Validates that each id is an integer
+    foreach ($data as $id) {
+        // Verifies that $val is an integer or a string representation of one
+        if (is_numeric($id) && filter_var($id, FILTER_VALIDATE_INT)) {
+            // Validate that the integer is positive
+            $id = (int)$id;
+            if ($id >= 0) {
+                $newData[] = $id;
+            }
+        }
+    }
+
+    return $newData;
+}
+
 /**
  * Helper for brevity in templates - echo html escaped string
  *

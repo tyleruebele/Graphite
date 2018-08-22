@@ -178,10 +178,15 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
     /**
      * Sets DBvals to match current vals
      *
+     * @param array $keys Which fields to unDiff, defaults to all
+     *
      * @return mixed Array of unregistered values on success, false on failure
      */
-    public function unDiff() {
-        foreach (static::$vars as $key => $ignore) {
+    public function unDiff(array $keys = null) {
+        if (null === $keys) {
+            $keys = array_keys(static::$vars);
+        }
+        foreach ($keys as $key) {
             $this->DBvals[$key] = $this->vals[$key];
         }
     }
@@ -269,7 +274,7 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
      */
     public static function drop() {
         $query = "DROP TABLE IF EXISTS `".static::$table."`;";
-        
+
         return $query;
     }
 

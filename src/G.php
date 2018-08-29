@@ -162,7 +162,9 @@ final class G {
      * @return void
      */
     public static function croak($v = null, $die = false) {
-        trigger_error("Call to deprecated method ".__METHOD__, E_USER_DEPRECATED);
+        $debug = debug_backtrace();
+        $from = ' in '.($debug[1]['class'] ?? '').($debug[1]['type'] ?? '').($debug[1]['function'] ?? '').'()';
+        trigger_error("Call to deprecated method ".__METHOD__.$from, E_USER_DEPRECATED);
         \croak($v, $die);
     }
 

@@ -21,7 +21,7 @@ function php_getRawInputHeader() {
     if ('' == $output && function_exists('apache_request_headers')) {
         $headers = apache_request_headers();
         foreach ($headers as $k => $v) {
-            $output .= $k . ': ' . $v . "\n";
+            $output .= $k.': '.$v."\n";
         }
     }
 
@@ -49,7 +49,7 @@ function php_getRawInputBody() {
  * @return string Full representation of HTTP request headers and body
  */
 function php_getRawInput() {
-    return php_getRawInputHeader() ."\n". php_getRawInputBody();
+    return php_getRawInputHeader()."\n".php_getRawInputBody();
 }
 
 /**
@@ -63,11 +63,11 @@ function php_getRawInput() {
  */
 function updateQueryString($url, $variable, $value) {
     $baseUrl = $url;
-    $query = array();
+    $query   = [];
 
     if (strpos($url, '?') !== false) {
-        $parts = explode('?', $url);
-        $baseUrl = reset($parts);
+        $parts       = explode('?', $url);
+        $baseUrl     = reset($parts);
         $queryString = end($parts);
 
         parse_str($queryString, $query);
@@ -75,7 +75,7 @@ function updateQueryString($url, $variable, $value) {
 
     $query[$variable] = $value;
 
-    return $baseUrl . '?' . http_build_query($query);
+    return $baseUrl.'?'.http_build_query($query);
 }
 
 /**
@@ -142,7 +142,7 @@ function array_patch(array $base, array ...$patches) {
 
 /**
  * Determine if the specified array contains all the specified keys
- * j
+ *
  * @param array $keys   Keys to seek
  * @param array $search Array to seek in
  *
@@ -207,6 +207,7 @@ function ob_var_dump($s) {
     ob_start();
     // @codingStandardsIgnoreStart
     var_dump($s);
+
     // @codingStandardsIgnoreEnd
 
     return ob_get_clean();
@@ -215,8 +216,8 @@ function ob_var_dump($s) {
 /**
  * Emit invocation info, and passed value
  *
- * @param mixed $value   value to var_dump
- * @param bool  $die whether to exit when done
+ * @param mixed $value value to var_dump
+ * @param bool  $die   whether to exit when done
  *
  * @return void
  */
@@ -232,11 +233,39 @@ function croak($value = null, $die = false) {
             : '')
         .' at <b>'.$debug[0]['file'].':'.$debug[0]['line'].'</b></summary>'
         .'<hr><pre class="G__croak_value">';
-    // @codingStandardsIgnoreStart
-    var_dump($value);
-    // @codingStandardsIgnoreEnd
+    croak_sub($value);
     echo '</pre></details>';
     if ($die) {
         exit;
+    }
+}
+
+/**
+ * Helper for croak
+ * Sets arrays into <details>/<summary> tags, recursively
+ *
+ * @param mixed $value Value to dump out
+ */
+function croak_sub($value) {
+    if (is_array($value)) {
+        // For arrays, replicate the output of var_dump, but add <details> collapsing and recursion
+        echo '<details><summary>array(', count($value), ') {</summary><div style="padding-left: 2em;">';
+        foreach ($value as $key => $val) {
+            if (!is_int($key)) {
+                $key = '"'.$key.'"';
+            }
+            echo '[', $key, "]=>\n";
+            croak_sub($val);
+        }
+        echo "</div></details>}\n";
+    } elseif (is_object($value)) {
+        // For objects, capture var_dump output and use the first line as the <summary> for a <details>
+        list($key, $val) = explode("\n", ob_var_dump($value), 2);
+        echo "<details><summary>$key</summary><div>"
+        , htmlspecialchars(rtrim($val, '}'))
+        , "</div></details>}\n";
+    } else {
+        // For everything else, capture var_dump output and escape it with htmlspecialchars()
+        echo htmlspecialchars(ob_var_dump($value));
     }
 }

@@ -208,6 +208,12 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
      * @return void
      */
     public function oninsert() {
+        if (isset(static::$vars['created_uts'])
+            && 'ts' == static::$vars['created_uts']['type']
+            && 0 == $this->vals['created_uts']
+        ) {
+            $this->vals['created_uts'] = NOW;
+        }
     }
 
     /**

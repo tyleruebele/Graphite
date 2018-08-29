@@ -222,20 +222,20 @@ function ob_var_dump($s) {
  */
 function croak($value = null, $die = false) {
     $debug = debug_backtrace();
-    echo '<div class="G__croak">'
-        .'<pre class="G__croak_info"><b>'.__METHOD__.'()</b> called'
+    echo '<details class="G__croak" open="open">'
+        .'<summary class="G__croak_info"><b>'.__METHOD__.'()</b> called'
         .(isset($debug[1])
             ? ' in <b>'.(isset($debug[1]['class'])
                 ? $debug[1]['class'].$debug[1]['type']
                 : ''
             ).$debug[1]['function'].'()</b>'
             : '')
-        .' at <b>'.$debug[0]['file'].':'.$debug[0]['line'].'</b></pre>'
+        .' at <b>'.$debug[0]['file'].':'.$debug[0]['line'].'</b></summary>'
         .'<hr><pre class="G__croak_value">';
     // @codingStandardsIgnoreStart
     var_dump($value);
     // @codingStandardsIgnoreEnd
-    echo '</pre></div>';
+    echo '</pre></details>';
     if ($die) {
         exit;
     }

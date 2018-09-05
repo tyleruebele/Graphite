@@ -44,7 +44,7 @@ class Role extends PassiveRecord {
     protected static $vars = [
         'role_id'     => ['type' => 'i', 'min' => 1, 'guard' => true],
         'created_uts' => ['type' => 'ts', 'min' => 0, 'guard' => true],
-        'updated_dts' => ['type' => 'dt', 'min' => NOW, 'def' => NOW, 'guard' => true],
+        'updated_dts' => ['type' => 'dt', 'def' => NOW, 'guard' => true],
         'creator_id'  => ['type' => 'i', 'strict' => true, 'def' => 0, 'min' => 1],
         'label'       => ['type' => 's', 'strict' => true, 'min' => 3, 'max' => 255],
         'description' => ['type' => 's', 'strict' => true, 'min' => 3, 'max' => 255],

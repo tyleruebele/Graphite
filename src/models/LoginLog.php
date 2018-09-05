@@ -42,7 +42,7 @@ class LoginLog extends PassiveRecord {
     protected static $vars = [
         'loginlog_id' => ['type' => 'i', 'min' => 1, 'guard' => true],
         'created_uts' => ['type' => 'ts', 'min' => 0, 'guard' => true],
-        'updated_dts' => ['type' => 'dt', 'min' => NOW, 'def' => NOW, 'guard' => true],
+        'updated_dts' => ['type' => 'dt', 'def' => NOW, 'guard' => true],
         'login_id'    => ['type' => 'i', 'min' => 0],
         'ip'          => ['type' => 'ip', 'def' => G_REMOTE_ADDR,
                           'ddl' => '`ip` int(10) unsigned NOT NULL DEFAULT 0'],

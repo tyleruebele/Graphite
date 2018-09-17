@@ -66,8 +66,8 @@ class Security {
         if (isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id'])
             && 0 < $_SESSION['login_id']
         ) {
-            $Login = new Login(array('login_id' => $_SESSION['login_id']));
-            if (false === G::build(DataBroker::class)->load($Login)) {
+            $Login = G::build(DataBroker::class)->byPK(Login::class, $_SESSION['login_id']);
+            if (false === $Login) {
                 G::msg(Localizer::translate('security.error.loginloadfail'), 'error');
                 unset($Login);
 

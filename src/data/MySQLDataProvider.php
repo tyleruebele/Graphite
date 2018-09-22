@@ -76,15 +76,15 @@ class MySQLDataProvider extends DataProvider {
         $keys = array_keys($vars);
         $query = $Model->getQuery();
         if ('' == $query) {
-            $query = 'SELECT t.`'.join('`, t.`', $keys).'`'
-                .' FROM `'.$Model->getTable().'` t';
+            $query = "\nSELECT t.`".join("`, t.`", $keys)."`"
+                ."\nFROM `".$Model->getTable()."` t";
         }
-        $query .= (count($values) ? ' WHERE '.join(' AND ', $values) : '')
-            .' GROUP BY t.`'.$Model->getPkey().'`'
+        $query .= (count($values) ? "\nWHERE ".join("\n    AND ", $values) : "")
+            ."\nGROUP BY t.`".$Model->getPkey()."`"
             .$this->_makeOrderBy($orders, array_keys($vars))
             .(is_numeric($count) && is_numeric($start)
-                ? ' LIMIT '.((int)$start).','.((int)$count)
-                : '')
+                ? "\nLIMIT ".((int)$start).",".((int)$count)
+                : "")
         ;
 
         $source = $Model->getSource();
@@ -140,7 +140,7 @@ class MySQLDataProvider extends DataProvider {
 
         $query = 'INSERT INTO `'.$Model->getTable().'`'
             . ' (`' . implode('`, `', $fields) . '`)'
-            . " VALUES (" . implode(", ", $values) . ")";
+            . "\nVALUES (" . implode(", ", $values) . ")";
 
         if (false === G::$M->query($query)) {
             return false;
@@ -192,8 +192,8 @@ class MySQLDataProvider extends DataProvider {
 
         $query = 'INSERT INTO `'.$Model->getTable().'`'
             . ' (`' . implode('`, `', $fields) . '`)'
-            . " VALUES (" . implode(", ", $values) . ")"
-            . " ON DUPLICATE KEY UPDATE "
+            . "\nVALUES (" . implode(", ", $values) . ")"
+            . "\nON DUPLICATE KEY UPDATE "
             .implode(', ', $updates);
 
         if (false === G::$M->query($query)) {
@@ -242,7 +242,7 @@ class MySQLDataProvider extends DataProvider {
 
         $query = 'UPDATE `'.$Model->getTable().'` SET '
             .implode(', ', $values)
-            ." WHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
+            ."\nWHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
 
         if (false === G::$M->query($query)) {
             return false;
@@ -266,7 +266,7 @@ class MySQLDataProvider extends DataProvider {
 
         $Model->ondelete();
         $query  = 'DELETE FROM `'.$Model->getTable().'` '
-            ." WHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
+            ."\nWHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
 
         return G::$M->query($query);
     }
@@ -300,6 +300,6 @@ class MySQLDataProvider extends DataProvider {
             }
         }
 
-        return 'ORDER BY '.join(',', $orders);
+        return "\nORDER BY ".join(',', $orders);
     }
 }

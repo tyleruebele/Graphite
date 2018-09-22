@@ -13,6 +13,17 @@
 
 namespace Stationer\Graphite;
 
+// Tue, 15 Nov 1994 12:45:26 GMT
+const DATETIME_HTTP = 'D, d M Y H:i:s T';
+// August 1, 2017
+const DATE_HUMAN = "M j, Y";
+// 11:07 am
+const TIME_HUMAN = "g:i a";
+// 2018-04-22
+const DATE_ISO = "Y-m-d";
+// 15:32:34
+const TIME_ISO = 'H:i:s';
+
 /** **************************************************************************
  * General settings
  ****************************************************************************/

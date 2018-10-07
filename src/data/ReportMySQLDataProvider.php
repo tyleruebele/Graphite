@@ -13,6 +13,8 @@
 
 namespace Stationer\Graphite\data;
 
+use Stationer\Graphite\G;
+
 /**
  * ReportMySQLDataProvider class - Fetches reports for PassiveReport models
  *
@@ -33,7 +35,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
      * @param int    $count  Number of rows to fetch
      * @param int    $start  Number of rows to skip
      *
-     * @return array Found records
+     * @return array|bool Found records, false on error
      */
     public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveReport $Model */
@@ -54,7 +56,15 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
         $query = array();
 
         foreach ($params as $key => $val) {
-            if ('a' === $vars[$key]['type']) {
+            // Support list of values for OR conditions
+            if (is_array($val) && !in_array($vars[$key]['type'], ['a', 'j', 'o', 'b'])) {
+                foreach ($val as $key2 => $val2) {
+                    // Sanitize each value through the model
+                    $Model->$key = $val2;
+                    $val[$key2]  = sprintf($vars[$key]['sql'], G::$m->escape_string($Model->$key));
+                }
+                $query[] = "(".implode(") OR (", $val).")";
+            } elseif ('a' === $vars[$key]['type']) {
                 $arr = unserialize($Model->$key);
 
                 foreach ($arr as $kk => $vv) {
@@ -62,6 +72,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
                 }
                 $query[] = sprintf($vars[$key]['sql'], "'".implode("', '", $arr)."'");
             } else {
+                /** @var string $val */
                 $query[] = sprintf($vars[$key]['sql'], G::$m->escape_string($val));
             }
         }
@@ -75,8 +86,8 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
         $query .= $this->_makeOrderBy($Model->getOrders($orders));
 
         if (null == $count) {
-            $count = $Model->getCount;
-            $start = $Model->getStart;
+            $count = $Model->getCount();
+            $start = $Model->getStart();
         }
         if (is_numeric($count) && is_numeric($start)) {
             // add limits also
@@ -89,8 +100,10 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
             return false;
         }
         $data = array();
-        while ($row = $result->fetch_assoc()) {
+        $row = $result->fetch_assoc();
+        while ($row) {
             $data[] = $row;
+            $row = $result->fetch_assoc();
         }
         $result->close();
         $Model->setData($data);
@@ -105,7 +118,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return array Found records
+     * @return array|bool Found records, false on failure
      */
     public function byPK($class, $pkey) {
         return false;

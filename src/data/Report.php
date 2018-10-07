@@ -144,7 +144,16 @@ abstract class Report extends DataModel {
         $where = [];
         foreach (static::$vars as $field => $props) {
             if (isset($this->vals[$field]) && null !== $this->vals[$field]) {
-                if ('a' === $props['type']) {
+                // Support list of values for OR conditions
+                if (is_array($this->vals[$field]) && !in_array($props['type'], ['a', 'j', 'o', 'b'])) {
+                    $val = [];
+                    foreach ($this->vals[$field] as $key2 => $val2) {
+                        // Sanitize each value through the model
+                        $this->__set($field, $val2);
+                        $val[$key2]  = sprintf($props['sql'], G::$m->escape_string($this->$field));
+                    }
+                    $where[] = "(".implode(") OR (", $val).")";
+                } elseif ('a' === $props['type']) {
                     $inList  = $this->implodeArray(unserialize($this->$field));
                     $where[] = sprintf($props['sql'], $inList);
                 } elseif ('b' == static::$vars[$field]['type']) {

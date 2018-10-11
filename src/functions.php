@@ -269,3 +269,35 @@ function croak_sub($value) {
         echo htmlspecialchars(ob_var_dump($value));
     }
 }
+
+/**
+ * Convert array to CSV
+ *
+ * @param array       $array    Array of arrays to convert to CSV
+ * @param array       $headers  Array of headers, if blank, assume first arrays are associative
+ *
+ * @return mixed
+ */
+function array_to_csv(array $array, array $headers = null) {
+    $headers = $headers ?? array_keys((array)reset($array));
+
+    ob_start();
+    $file = fopen("php://output", 'w');
+    fputcsv($file, $headers);
+    foreach ($array as $row) {
+        if (!is_array($row) && is_object($row)) {
+            if (method_exists($row, 'getAll')) {
+                $row = $row->getAll();
+            } elseif (method_exists($row, 'toArray')) {
+                $row = $row->toArray();
+            } else {
+                $row = (array)$row;
+            }
+        }
+        $row = array_values($row);
+        fputcsv($file, $row);
+    }
+    fclose($file);
+
+    return ob_get_clean();
+}

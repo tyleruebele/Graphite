@@ -35,13 +35,13 @@ final class G {
     /** @var Security Security / Session object */
     public static $S;
     /** @var array Graphite configuration array */
-    public static $G = array();
+    public static $G = [];
 
     /** @var Factory Object */
     public static $Factory;
 
     /** @var array Stores messages to be displayed to the user */
-    private static $_msg = array();
+    private static $_msg = [];
 
     /**
      * Private constructor to prevent instantiation
@@ -63,11 +63,12 @@ final class G {
         // Properly handle Singletons
         if (method_exists($args[0], 'getInstance')) {
             $className = array_shift($args);
+
             return $className::getInstance($args);
         }
 
         return call_user_func_array(
-            array(self::$Factory, "build"),
+            [self::$Factory, "build"],
             $args
         );
     }
@@ -87,11 +88,12 @@ final class G {
             return self::$_msg;
         }
         if (true === $s) {
-            $msg = self::$_msg;
-            self::$_msg = array();
+            $msg        = self::$_msg;
+            self::$_msg = [];
+
             return $msg;
         }
-        self::$_msg[] = array($s, $c);
+        self::$_msg[] = [$s, $c];
     }
 
     /**
@@ -102,7 +104,7 @@ final class G {
     public static function storeMsg() {
         $hash = '';
         if (isset($_SESSION)) {
-            $hash = substr(md5(NOW), 0, 6);
+            $hash                        = substr(md5(NOW), 0, 6);
             $_SESSION['msgStore'][$hash] = self::$_msg;
         }
 
@@ -117,7 +119,7 @@ final class G {
      * @return array
      */
     public static function loadMsg($hash) {
-        $messages = array();
+        $messages = [];
         if (!empty($_SESSION['msgStore'][$hash])) {
             $messages = $_SESSION['msgStore'][$hash];
             unset($_SESSION['msgStore'][$hash]);
@@ -128,7 +130,6 @@ final class G {
         return $messages;
     }
 
-
     /**
      * Replace special characters with their common counterparts
      *
@@ -138,34 +139,35 @@ final class G {
      */
     public static function normalize_special_characters($s) {
         // ‘single’ and “double” quot’s yeah.
-        $s = str_replace(array(
+        $s = str_replace([
             '“',  // left side double smart quote
             '”',  // right side double smart quote
             '‘',  // left side single smart quote
             '’',  // right side single smart quote
             '…',  // ellipsis
             '—',  // em dash
-            '–'), // en dash
-            array('"', '"', "'", "'", "...", "-", "-"),
+            '–',
+        ], // en dash
+            ['"', '"', "'", "'", "...", "-", "-"],
             $s);
+
         return $s;
     }
 
     /**
      * Emit invocation info, and passed value
      *
-     * @param mixed $v   value to var_dump
-     * @param bool  $die whether to exit when done
+     * @param mixed $v value to var_dump
      *
      * @deprecated
      *
      * @return void
      */
-    public static function croak($v = null, $die = false) {
+    public static function croak($v = null) {
         $debug = debug_backtrace();
-        $from = ' in '.($debug[1]['class'] ?? '').($debug[1]['type'] ?? '').($debug[1]['function'] ?? '').'()';
+        $from  = ' in '.($debug[1]['class'] ?? '').($debug[1]['type'] ?? '').($debug[1]['function'] ?? '').'()';
         trigger_error("Call to deprecated method ".__METHOD__.$from, E_USER_DEPRECATED);
-        \croak($v, $die);
+        \croak($v);
     }
 
     /**
@@ -226,8 +228,9 @@ final class G {
      * @return mixed Pass-through return value of Localizer::translate
      */
     public static function _() {
-        return call_user_func_array(array('Localizer', 'translate'), func_get_args());
+        return call_user_func_array(['Localizer', 'translate'], func_get_args());
     }
 }
+
 // register G::close() to be called at shutdown
 register_shutdown_function('\Stationer\Graphite\G::close');

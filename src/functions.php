@@ -216,14 +216,14 @@ function ob_var_dump($s) {
 /**
  * Emit invocation info, and passed value
  *
- * @param mixed $value value to var_dump
- * @param bool  $die   whether to exit when done
+ * @param mixed $value     Value to var_dump
+ * @param int   $openDepth How deep to open the details
  *
  * @return void
  */
-function croak($value = null, $die = false) {
+function croak($value = null, $openDepth = 99) {
     $debug = debug_backtrace();
-    echo '<details class="G__croak" open="open">'
+    echo '<details class="G__croak"'.(0 < $openDepth ? ' open="open"' : '').'>'
         .'<summary class="G__croak_info"><b>'.__METHOD__.'()</b> called'
         .(isset($debug[1])
             ? ' in <b>'.(isset($debug[1]['class'])
@@ -233,36 +233,35 @@ function croak($value = null, $die = false) {
             : '')
         .' at <b>'.$debug[0]['file'].':'.$debug[0]['line'].'</b></summary>'
         .'<hr><pre class="G__croak_value">';
-    croak_sub($value);
+    croak_sub($value, $openDepth - 1);
     echo '</pre></details>';
-    if ($die) {
-        exit;
-    }
 }
 
 /**
  * Helper for croak
  * Sets arrays into <details>/<summary> tags, recursively
  *
- * @param mixed $value Value to dump out
+ * @param mixed $value     Value to dump out
+ * @param int   $openDepth How deep to open the details
  */
-function croak_sub($value) {
+function croak_sub($value, $openDepth = 99) {
     if (is_array($value)) {
         // For arrays, replicate the output of var_dump, but add <details> collapsing and recursion
-        echo '<details><summary>array(', count($value), ') {</summary><div style="padding-left: 2em;">';
+        echo '<details', (0 < $openDepth ? ' open="open"' : ''), '>'
+        , '<summary>array(', count($value), ') {</summary><div style="padding-left: 2em;">';
         foreach ($value as $key => $val) {
             if (!is_int($key)) {
                 $key = '"'.$key.'"';
             }
             echo '[', $key, "]=>\n";
-            croak_sub($val);
+            croak_sub($val, $openDepth - 1);
         }
         echo "</div></details>}\n";
     } elseif (is_object($value)) {
         // For objects, capture var_dump output and use the first line as the <summary> for a <details>
         list($key, $val) = explode("\n", ob_var_dump($value), 2);
-        echo "<details><summary>$key</summary><div>"
-        , htmlspecialchars(rtrim($val, '}'))
+        echo '<details', (0 < $openDepth ? ' open=\"open\"' : ''), '><summary>', $key, '</summary><div>'
+        , htmlspecialchars(rtrim(rtrim($val), '}'))
         , "</div></details>}\n";
     } else {
         // For everything else, capture var_dump output and escape it with htmlspecialchars()
@@ -273,8 +272,8 @@ function croak_sub($value) {
 /**
  * Convert array to CSV
  *
- * @param array       $array    Array of arrays to convert to CSV
- * @param array       $headers  Array of headers, if blank, assume first arrays are associative
+ * @param array $array   Array of arrays to convert to CSV
+ * @param array $headers Array of headers, if blank, assume first arrays are associative
  *
  * @return mixed
  */

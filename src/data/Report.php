@@ -78,12 +78,19 @@ abstract class Report extends DataModel {
     /**
      * Run the report query with defined params and set results in $this->_data
      *
+     * @param array $params Values to search against
+     * @param array $orders Order(s) of results
+     * @param int   $count  Number of rows to fetch
+     * @param int   $start  Number of rows to skip
+     *
      * @return bool false on failure
      */
-    public function load() {
+    public function load(array $params = [], array $orders = [], $count = null, $start = 0) {
+        $this->applyParams($params, $orders, $count, $start);
+
         $this->_data = [];
         // Build the WHERE clause of the report query based on set params
-        $query = sprintf(static::$query, $this->_buildWhere());
+        $query = sprintf(static::$query, $this->_buildWhere($params));
 
         // if an order has been set, add it to the query
         if (null !== $this->_order) {
@@ -138,26 +145,26 @@ abstract class Report extends DataModel {
     /**
      * Build a WHERE clause based on set params
      *
+     * @param array $params Values to search against
+     *
      * @return string Query WHERE clause
      */
-    protected function _buildWhere() {
+    protected function _buildWhere($params = []) {
         $where = [];
         foreach (static::$vars as $field => $props) {
             if (isset($this->vals[$field]) && null !== $this->vals[$field]) {
                 // Support list of values for OR conditions
-                if (is_array($this->vals[$field]) && !in_array($props['type'], ['a', 'j', 'o', 'b'])) {
+                if (is_array($params[$field] ?? null) && !in_array($props['type'], ['a', 'j', 'o', 'b'])) {
                     $val = [];
-                    foreach ($this->vals[$field] as $key2 => $val2) {
+                    foreach ($params[$field] as $key2 => $val2) {
                         // Sanitize each value through the model
                         $this->__set($field, $val2);
-                        $val[$key2]  = sprintf($props['sql'], G::$m->escape_string($this->$field));
+                        $val[$key2] = sprintf($props['sql'], G::$m->escape_string($this->vals[$field]));
                     }
-                    $where[] = "(".implode(") OR (", $val).")";
+                    $where[] = "((".implode(") OR (", $val)."))";
                 } elseif ('a' === $props['type']) {
                     $inList  = $this->implodeArray(unserialize($this->$field));
                     $where[] = sprintf($props['sql'], $inList);
-                } elseif ('b' == static::$vars[$field]['type']) {
-                    $where[] = sprintf($props['sql'], $this->vals[$field] ? "b'1'" : "b'0'");
                 } else {
                     $where[] = sprintf($props['sql'], G::$m->escape_string($this->vals[$field]));
                 }
@@ -251,21 +258,9 @@ abstract class Report extends DataModel {
      * @return array Found records
      */
     public function fetch(array $params = [], array $orders = [], $count = null, $start = 0) {
-        if (count($params)) {
-            $this->setAll($params);
-        }
-        if (count($orders)) {
-            $fields       = array_keys($orders);
-            $this->_order = array_shift($fields);
-            $this->_asc   = array_shift($orders);
-        }
-        if (null !== $count) {
-            $this->_count = $count;
-        }
-        if (null !== $start) {
-            $this->_start = $start;
-        }
-        $this->load();
+        $this->applyParams($params, $orders, $count, $start);
+
+        $this->load($params, $orders, $count, $start);
 
         return $this->toArray();
     }
@@ -373,5 +368,32 @@ abstract class Report extends DataModel {
         }
 
         return "'".implode("', '", $array)."'";
+    }
+
+    /**
+     * Apply supplied Report parameters
+     *
+     * @param array $params Values to search against
+     * @param array $orders Order(s) of results
+     * @param int   $count  Number of rows to fetch
+     * @param int   $start  Number of rows to skip
+     *
+     * @return void
+     */
+    protected function applyParams(array $params = [], array $orders = [], $count = null, $start = 0) {
+        if (count($params)) {
+            $this->setAll($params);
+        }
+        if (count($orders)) {
+            $fields       = array_keys($orders);
+            $this->_order = array_shift($fields);
+            $this->_asc   = array_shift($orders);
+        }
+        if (0 < $count) {
+            $this->_count = $count;
+        }
+        if (0 < $start) {
+            $this->_start = $start;
+        }
     }
 }

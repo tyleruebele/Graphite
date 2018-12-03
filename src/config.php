@@ -19,6 +19,8 @@ const DATETIME_HTTP = 'D, d M Y H:i:s T';
 const DATE_HUMAN = "M j, Y";
 // 11:07 am
 const TIME_HUMAN = "g:i a";
+// 2018-04-22 11:07 am
+const DATETIME_HUMAN = "M j, Y g:i a";
 // 2018-04-22
 const DATE_ISO = "Y-m-d";
 // 15:32:34

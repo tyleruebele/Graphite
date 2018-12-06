@@ -282,7 +282,8 @@ ORDER BY `loginname`
         }
         $a = [];
         while ($row = $result->fetch_assoc()) {
-            $a[$row[static::$pkey]] = new static($row);
+            $a[$row[static::$pkey]] = new static();
+            $a[$row[static::$pkey]]->load_array($row);
         }
         $result->close();
 

@@ -228,7 +228,7 @@ final class G {
      * @return mixed Pass-through return value of Localizer::translate
      */
     public static function _() {
-        return call_user_func_array(['Localizer', 'translate'], func_get_args());
+        return call_user_func_array([Localizer::class, 'translate'], func_get_args());
     }
 }
 

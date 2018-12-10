@@ -61,19 +61,11 @@ class Role extends PassiveRecord {
      * @return void
      */
     public function oninsert() {
-        $this->__set('created_uts', NOW);
         if ($this->__get('creator_id') < 1) {
             $this->__set('creator_id', G::$S->Login->login_id);
         }
-    }
 
-    /**
-     * Called by Record::update() BEFORE running UPDATE query
-     *
-     * @return void
-     */
-    public function onupdate() {
-        $this->__set('updated_dts', NOW);
+        parent::oninsert();
     }
 
     /**

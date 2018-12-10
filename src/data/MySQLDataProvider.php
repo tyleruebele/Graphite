@@ -129,6 +129,9 @@ class MySQLDataProvider extends DataProvider {
         $values = array();
 
         $Model->oninsert();
+        // Get new diff in case oninsert altered data
+        $diff = $Model->getDiff();
+
         foreach ($diff as $key => $val) {
             $fields[] = $key;
             if ('b' == $vars[$key]['type']) {
@@ -179,6 +182,9 @@ class MySQLDataProvider extends DataProvider {
         $updates = array();
 
         $Model->oninsert();
+        // Get new diff in case oninsert altered data
+        $diff = $Model->getDiff();
+
         foreach ($diff as $key => $val) {
             $fields[] = $key;
             if ('b' == $vars[$key]['type']) {
@@ -230,6 +236,9 @@ class MySQLDataProvider extends DataProvider {
         $values = array();
 
         $Model->onupdate();
+        // Get new diff in case onupdate altered data
+        $diff = $Model->getDiff();
+
         foreach ($diff as $key => $val) {
             if (null === $Model->{$Model->getPkey()}) {
                 $values[] = "`$key` = NULL";

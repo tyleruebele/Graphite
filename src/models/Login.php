@@ -128,10 +128,11 @@ FROM `".static::$table."` t
      * @return void
      */
     public function oninsert() {
-        $this->__set('created_uts', NOW);
         if ($this->__get('referrer_id') < 1) {
             $this->__set('referrer_id', G::$S->Login->login_id);
         }
+
+        parent::oninsert();
     }
 
     /**
@@ -148,6 +149,8 @@ FROM `".static::$table."` t
                 break;
             }
         }
+
+        parent::onupdate();
     }
 
     /**

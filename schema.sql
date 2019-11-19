@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `Role` (
 );
 
 DROP TABLE IF EXISTS `Role_Login`;
-CREATE TABLE `Role_Login` (
+CREATE TABLE IF NOT EXISTS `Role_Login` (
     `role_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `login_id` smallint(5) unsigned NOT NULL DEFAULT '0',
     `created_uts` int(10) unsigned NOT NULL DEFAULT 0,

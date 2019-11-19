@@ -1,6 +1,10 @@
 Graphite Conventions
 ====
 
+Coding Conventions
+---
+See [StyleGuide.php](https://github.com/stationer/Graphite/blob/master/StyleGuide.php)
+
 Database Conventions
 ---
 - All row id columns, numeric keys, named *_id

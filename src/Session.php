@@ -219,6 +219,19 @@ class Session {
     }
 
     /**
+     * Wrap call to session_destroy() to prevent calling on unopen sessions
+     *
+     * @return bool
+     */
+    public function destroy() {
+        if (false === $this->open) {
+            return false;
+        }
+
+        return session_destroy();
+    }
+
+    /**
      * Call a PHP session_* function
      *
      * @param string $func Partial name of PHP session_* function to call

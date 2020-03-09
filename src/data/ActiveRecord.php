@@ -604,7 +604,7 @@ abstract class ActiveRecord extends PassiveRecord {
      *
      * @return string
      */
-    public function encrypt($plaintext) {
+    public static function encrypt($plaintext) {
         if (empty(G::$G['SEC']['encryptionKey'])) {
             trigger_error('Encryption key not set!', E_USER_ERROR);
         }
@@ -625,7 +625,7 @@ abstract class ActiveRecord extends PassiveRecord {
      *
      * @return string
      */
-    public function decrypt($ciphertext) {
+    public static function decrypt($ciphertext) {
         if (empty(G::$G['SEC']['encryptionKey'])) {
             trigger_error('Encryption key not set!', E_USER_ERROR);
         }

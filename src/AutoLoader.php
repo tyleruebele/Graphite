@@ -193,8 +193,14 @@ class AutoLoader {
      * @return void
      */
     public static function loadClass($className) {
+        // If the classname is registered, load it.
         if (isset(static::$classNames[$className]) && file_exists(static::$classNames[$className])) {
             require_once static::$classNames[$className];
+            return;
+        }
+
+        // If the namespace is unknown, silently fail
+        if (!self::isNamespaceKnown($className)) {
             return;
         }
 
@@ -261,5 +267,27 @@ class AutoLoader {
     private static function setRegistryCache() {
         // Attempt to save cached class registry, if the $Cache is available
         self::$Cache && self::$Cache->set(static::getCacheKey(), static::$classNames, 3600);
+    }
+
+    /**
+     * Checks whether the specified classname is in a known namespace
+     *
+     * @param string $className The fully qualified classname to check
+     *
+     * @return bool True if the namespace is registered in G::$G['namespaces']
+     */
+    public static function isNamespaceKnown(string $className) {
+        // Test if class is global
+        if (false === strpos($className, '\\')) {
+            return true;
+        }
+
+        foreach (G::$G['namespaces'] as $namespace) {
+            if ('' != trim($namespace, '\\') && 0 === strpos(trim($className, '\\'), trim($namespace, '\\'))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

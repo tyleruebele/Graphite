@@ -24,7 +24,6 @@ use Stationer\Graphite\data\PassiveRecord;
  * @author   LoneFry <dev@lonefry.com>
  * @license  MIT https://github.com/stationer/Graphite/blob/master/LICENSE
  * @link     https://github.com/stationer/Graphite
- * @see      /src/data/Record.php
  * @property int    role_id
  * @property int    created_uts
  * @property string updated_dts

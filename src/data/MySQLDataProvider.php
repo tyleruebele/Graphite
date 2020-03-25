@@ -191,10 +191,6 @@ class MySQLDataProvider extends DataProvider {
             return null;
         }
 
-        // Iff the pkey has a value, add it to the diff to ensure the UPDATE works
-        if (null !== $Model->{$Model->getPkey()}) {
-            $diff[$Model->getPkey()] = $Model->{$Model->getPkey()};
-        }
         $vars    = $Model->getFieldList();
         $fields  = [];
         $values  = [];
@@ -203,6 +199,10 @@ class MySQLDataProvider extends DataProvider {
         $Model->oninsert();
         // Get new diff in case oninsert altered data
         $diff = $Model->getDiff();
+        // Iff the pkey has a value, add it to the diff to ensure the UPDATE works
+        if (null !== $Model->{$Model->getPkey()}) {
+            $diff[$Model->getPkey()] = $Model->{$Model->getPkey()};
+        }
 
         foreach ($diff as $key => $val) {
             $fields[] = $key;

@@ -290,7 +290,7 @@ class MySQLDataProvider extends DataProvider {
      * @return mixed|null
      */
     public function delete(PassiveRecord &$Model) {
-        // If the PKey is not set, what would we update?
+        // If the PKey is not set, what would we delete?
         if (null === $Model->{$Model->getPkey()}) {
             return null;
         }
@@ -298,6 +298,81 @@ class MySQLDataProvider extends DataProvider {
         $Model->ondelete();
         $query = 'DELETE FROM `'.$Model->getTable().'` '
             ."\nWHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
+
+        return G::$M->query($query);
+    }
+
+    /**
+     * Delete data for passed Models
+     *
+     * @param PassiveRecord[] $Models Model to be passed
+     *
+     * @return mixed|null
+     */
+    public function deleteSet(array &$Models) {
+        $sanitizedPKeys = [];
+        foreach ($Models as $key => $Model) {
+            if (!is_a($Model, PassiveRecord::class)) {
+                trigger_error('Supplied class "'.$class.'" name does not extend PassiveRecord', E_USER_ERROR);
+                unset($Models[$key]);
+            } elseif (null === $Model->{$Model->getPkey()}) {
+                // If the PKey is not set, what would we update?
+                unset($Models[$key]);
+            } else {
+                $Model->ondelete();
+                $sanitizedPKeys[] = G::$M->escape_string($Model->{$Model->getPkey()});
+            }
+        }
+        // If we got no keys, there is no work to do
+        if (empty($sanitizedPKeys)) {
+            return null;
+        }
+
+        $query = "
+DELETE FROM `".$Model->getTable()."`
+WHERE `".$Model->getPkey()."` IN ('".implode("','", $sanitizedPKeys)."')
+";
+
+        return G::$M->query($query);
+    }
+
+    /**
+     * Search for records of type $class according to search params $params
+     * Order results by $orders and limit results by $count, $start
+     *
+     * @param string $class Name of Model to search for
+     * @param array  $PKeys Primary Keys to DELETE
+     *
+     * @return null|bool
+     */
+    public function deleteByPK($class, array $PKeys) {
+        /** @var PassiveRecord $Model */
+        $Model = G::build($class);
+        if (!is_a($Model, PassiveRecord::class)) {
+            trigger_error('Supplied class "'.$class.'" name does not extend PassiveRecord', E_USER_ERROR);
+        }
+        // If the PKey is not set, what would we delete?
+        if (null === $Model->getPkey()) {
+            return null;
+        }
+
+        // Filter and Sanitize supplied keys according to specified Model
+        $sanitizedPKeys = [];
+        foreach ($PKeys as $value) {
+            $Model->{$Model->getPkey()} = $value;
+            if ($Model->{$Model->getPkey()} === $value) {
+                $sanitizedPKeys[] = G::$M->escape_string($value);
+            }
+        }
+        // If we got no keys, there is no work to do
+        if (empty($sanitizedPKeys)) {
+            return null;
+        }
+
+        $query = "
+DELETE FROM `".$Model->getTable()."`
+WHERE `".$Model->getPkey()."` IN ('".implode("','", $sanitizedPKeys)."')
+";
 
         return G::$M->query($query);
     }

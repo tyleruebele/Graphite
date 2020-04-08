@@ -26,7 +26,7 @@ use Stationer\Graphite\G;
  * @see      /src/data/PassiveRecord.php
  * @see      /src/data/Report.php
  */
-abstract class DataModel implements \ArrayAccess {
+abstract class DataModel implements \ArrayAccess, \JsonSerializable {
     /** @var string Select query used by load() */
     protected static $query;
 
@@ -121,7 +121,9 @@ abstract class DataModel implements \ArrayAccess {
      *
      * @return array
      */
-    public abstract function toArray();
+    public function toArray() {
+        return $this->getAll();
+    }
 
     /**
      * return an array of all registered values, checking
@@ -957,4 +959,23 @@ abstract class DataModel implements \ArrayAccess {
     public function offsetUnset($offset) {
         $this->__unset($offset);
     }
+    /* **********************************************************************
+     * END Implement ArrayAccess methods by wrapping DataModel magic methods
+     ***********************************************************************/
+
+    /* **********************************************************************
+     * Implement JsonSerializable method
+     ***********************************************************************/
+
+    /**
+     * Instruct json_encode to only encode the array cast
+     *
+     * @return array json_encode'd array of values
+     */
+    public function jsonSerialize() {
+        return $this->toArray();
+    }
+    /* **********************************************************************
+     * END Implement JsonSerializable method
+     ***********************************************************************/
 }

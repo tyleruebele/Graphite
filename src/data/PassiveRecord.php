@@ -29,7 +29,7 @@ use Stationer\Graphite\G;
  * @property string  $pkey
  * @property array[] $vars
  */
-abstract class PassiveRecord extends DataModel implements \JsonSerializable {
+abstract class PassiveRecord extends DataModel {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = [];
 
@@ -130,15 +130,6 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
         trigger_error('Requested invalid joiner table');
 
         return null;
-    }
-
-    /**
-     * Return the model field list
-     *
-     * @return array Vars array representing table schema
-     */
-    public static function getFieldList() {
-        return static::$vars;
     }
 
     /**
@@ -268,24 +259,6 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
         $this->onload($row);
 
         return $row;
-    }
-
-    /**
-     * Produce meaningful array representation of Model
-     *
-     * @return array
-     */
-    public function toArray() {
-        return $this->getAll();
-    }
-
-    /**
-     * Instruct json_encode to only encode the array cast
-     *
-     * @return array json_encode'd array of values
-     */
-    public function jsonSerialize() {
-        return $this->toArray();
     }
 
     /**

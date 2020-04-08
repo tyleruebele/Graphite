@@ -29,7 +29,7 @@ use Stationer\Graphite\G;
  * @property string  $pkey
  * @property array[] $vars
  */
-abstract class PassiveRecord extends DataModel implements \JsonSerializable {
+abstract class PassiveRecord extends DataModel {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = [];
 
@@ -277,15 +277,6 @@ abstract class PassiveRecord extends DataModel implements \JsonSerializable {
      */
     public function toArray() {
         return $this->getAll();
-    }
-
-    /**
-     * Instruct json_encode to only encode the array cast
-     *
-     * @return array json_encode'd array of values
-     */
-    public function jsonSerialize() {
-        return $this->toArray();
     }
 
     /**

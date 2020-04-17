@@ -145,15 +145,18 @@ abstract class Controller {
         switch ($this->method) {
             case 'GET':
                 $params = (array)$_GET;
+                if (empty($params)) {
+                    $params = php_getParsedInput();
+                }
                 break;
             case 'POST':
                 $params = (array)$_POST;
+                if (empty($params)) {
+                    $params = php_getParsedInput();
+                }
                 break;
             default:
-                $params = if_json_decode(php_getRawInputBody(), JSON_OBJECT_AS_ARRAY);
-                if (false === $params) {
-                    parse_str(php_getRawInputBody(), $params);
-                }
+                $params = php_getParsedInput();
                 $GLOBALS['_'.$this->method] = $params;
                 break;
         }

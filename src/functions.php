@@ -53,6 +53,28 @@ function php_getRawInput() {
 }
 
 /**
+ * Fetch parsed HTTP request data
+ *
+ * @return string[] Full representation of HTTP request body
+ */
+function php_getParsedInput() {
+    $input = php_getRawInputBody();
+    // If there was no input, represent that with an empty array
+    if (empty($input)) {
+        return [];
+    }
+    // Attempt to parse json first because it's more rigid
+    $params = if_json_decode($input, JSON_OBJECT_AS_ARRAY);
+    if (false !== $params) {
+        return $params;
+    }
+    // Attempt to parse query string last, because it's less rigid
+    parse_str($input, $params);
+
+    return $params;
+}
+
+/**
  * Updates a variable in a url
  *
  * @param string $url      URL to add the variable to

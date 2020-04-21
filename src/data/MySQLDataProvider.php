@@ -132,7 +132,7 @@ class MySQLDataProvider extends DataProvider {
      *
      * @param PassiveRecord $Model Model to save, passed by reference
      *
-     * @return bool|null True on success, False on failure, Null on invalid attempt
+     * @return mixed New Primary Key value on success, False on failure, Null on invalid attempt
      */
     public function insert(PassiveRecord &$Model) {
         $diff = $Model->getDiff();
@@ -174,6 +174,23 @@ class MySQLDataProvider extends DataProvider {
         $Model->onAfterInsert();
 
         return $Model->{$Model->getPkey()};
+    }
+
+    /**
+     * Save data for passed Models
+     * @TODO: Make this build one query
+     *
+     * @param PassiveRecord[] $Model Model to save, passed by reference
+     *
+     * @return mixed True on success, False on failure, Null on invalid attempt
+     */
+    public function insertSet(array &$Models) {
+        $result = true;
+        foreach ($Models as $Model) {
+            $result = $result && $this->insert($Model);
+        }
+
+        return $result;
     }
 
     /**

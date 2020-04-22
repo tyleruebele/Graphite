@@ -261,7 +261,7 @@ class Runtime {
             $root = implode('/', array_slice($paths, 0, 4));
         } else {
             // Assume we're in a composer vendor dir, pick parent of vendor directory
-            $root = dirname(substr(__DIR__, 0, strpos(__DIR__, '/graphite/core/')));
+            $root = dirname(substr(__DIR__, 0, strpos(__DIR__, '/stationer/graphite/')));
         }
 
         return $root;

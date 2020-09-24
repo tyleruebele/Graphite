@@ -66,8 +66,13 @@ class Session {
      * Private constructor to prevent instantiation
      */
     private function __construct() {
-        // OnBDC-913: Prevent use of sessions from CLI
-        $this->CLI_Mode = 'cli' == php_sapi_name();
+        // Allow manual forcing of CLI_Mode to prevent sessions
+        if (isset(G::$G['SEC']['CLI_Mode']) && is_bool(G::$G['SEC']['CLI_Mode'])) {
+            $this->CLI_Mode = G::$G['SEC']['CLI_Mode'];
+        } else {
+            // Default to prevent use of sessions from CLI
+            $this->CLI_Mode = 'cli' == php_sapi_name();
+        }
     }
 
     /**
@@ -226,6 +231,9 @@ class Session {
     public function destroy() {
         if (false === $this->open) {
             return false;
+        }
+        if ($this->CLI_Mode) {
+            return true;
         }
 
         return session_destroy();

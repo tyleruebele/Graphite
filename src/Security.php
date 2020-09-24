@@ -159,8 +159,10 @@ class Security {
             // Be thorough, also delete the session cookie
             if (ini_get("session.use_cookies") && !headers_sent()) {
                 $params = $this->Session->get_cookie_params();
-                setcookie($this->Session->name(), '', NOW - 86400, $params["path"],
-                    $params["domain"], $params["secure"], $params["httponly"]);
+                if (is_array($params)) {
+                    setcookie($this->Session->name(), '', NOW - 86400, $params["path"],
+                        $params["domain"], $params["secure"], $params["httponly"]);
+                } // else we don't have a cookie to clear
             }
             $this->Session->destroy();
         }

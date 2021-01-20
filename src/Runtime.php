@@ -28,16 +28,16 @@ require_once __DIR__.'/functions.php';
  */
 class Runtime {
     /** @var Runtime $instance */
-    private static $instance = null;
+    protected static $instance = null;
     /** @var Profiler $Profiler */
     public $Profiler;
 
     /**
      * Create and return singleton instance
      *
-     * @return static
+     * @return Runtime
      */
-    public static function getInstance() {
+    public static function getInstance(): Runtime {
         if (null === static::$instance) {
             static::$instance = new static();
         }
@@ -81,6 +81,10 @@ class Runtime {
      * @return void
      */
     public function init() {
+        static $initRan = false;
+        if (true === $initRan) {
+            return;
+        }
         $this->Profiler->mark('init');
         $this->init_core();
         $this->init_mysqli();
@@ -89,6 +93,7 @@ class Runtime {
         G::$C = new Dispatcher(G::$G['CON']);
         G::$V = new View(G::$G['VIEW']);
         $this->Profiler->stop('init');
+        $initRan = true;
     }
 
     /**
@@ -100,7 +105,7 @@ class Runtime {
         $this->Profiler->mark(__METHOD__);
 
         // the root of this website
-        define('SITE', $this->guessSiteRoot());
+        defined('SITE') or define('SITE', $this->guessSiteRoot());
         $this->generateServerDefauts();
 
         $this->loadConfigs();
@@ -110,15 +115,15 @@ class Runtime {
         Localizer::setLanguage(G::$G['language']);
 
         // controls a few things that assist dev
-        define('MODE', G::$G['MODE'] ?? 'prd');
+        defined('MODE') or define('MODE', G::$G['MODE'] ?? 'prd');
         if ('dev' == MODE) {
             error_reporting(E_ALL | E_STRICT);
         }
         if (isset(G::$G['timezone'])) {
             date_default_timezone_set(G::$G['timezone']);
         }
-        define('VERSION', G::$G['VERSION']);
-        define('G_DB_TABL', G::$G['db']['tabl']);
+        defined('VERSION') or define('VERSION', G::$G['VERSION']);
+        defined('G_DB_TABL') or define('G_DB_TABL', G::$G['db']['tabl']);
     }
 
     /**
@@ -231,6 +236,10 @@ class Runtime {
         if (!isset($_SERVER['SERVER_NAME'])) {
             $paths = explode('/', SITE);
             $_SERVER['SERVER_NAME'] = array_pop($paths);
+            // This edit is needed to support Laravel's /public subdirectory
+            if ('public' == $_SERVER['SERVER_NAME']) {
+                $_SERVER['SERVER_NAME'] = array_pop($paths);
+            }
         }
         if (!isset($_SERVER['REQUEST_URI'])) {
             $_SERVER['REQUEST_URI'] = __FILE__;
@@ -238,7 +247,7 @@ class Runtime {
         if (!isset($_SERVER['REMOTE_ADDR'])) {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
-        define('G_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
+        defined('G_REMOTE_ADDR') or define('G_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
         if (!isset($_SERVER['REQUEST_METHOD'])) {
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }
@@ -249,7 +258,7 @@ class Runtime {
      *
      * @return string Probable directory of webroot
      */
-    public function guessSiteRoot() {
+    public function guessSiteRoot(): string {
         $paths = explode('/', __DIR__);
 
         if ('/var/www/vhosts/' == substr(__DIR__, 0, 16)) {
@@ -307,6 +316,10 @@ class Runtime {
             foreach ([$_SERVER['SERVER_NAME'], end($tmppath)] as $tmpdomain) {
                 if (file_exists(dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
                     include dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
+                    continue 2;
+                // This edit is needed to support the SITE being Laravel's /public subdirectory
+                } elseif (file_exists(dirname(dirname(SITE)).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
+                    include dirname(dirname(SITE)).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
                     continue 2;
                 } elseif (file_exists(SITE.'/'.$tmpfile.$tmpdomain.'.php')) {
                     include SITE.'/'.$tmpfile.$tmpdomain.'.php';

@@ -312,8 +312,9 @@ class Runtime {
      */
     public function loadSiteConfigs() {
         $tmppath = explode('/', SITE);
+        $hostnames = [$_SERVER['SERVER_NAME'], array_pop($tmppath), array_pop($tmppath)];
         foreach (['secrets.', 'config.'] as $tmpfile) {
-            foreach ([$_SERVER['SERVER_NAME'], end($tmppath)] as $tmpdomain) {
+            foreach ($hostnames as $tmpdomain) {
                 if (file_exists(dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
                     include dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
                     continue 2;

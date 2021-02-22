@@ -311,7 +311,7 @@ class AutoLoader {
                 throw new \Exception();
             }
             self::$Cache = new \RedisUtility();
-            if ($Cache->exists(static::getCacheKey())) {
+            if (self::$Cache->exists(static::getCacheKey())) {
                 $output = self::$Cache->get(static::getCacheKey());
             }
         } catch (\Exception $e) {

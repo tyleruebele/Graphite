@@ -54,7 +54,7 @@ class Profiler {
         $this->mark(self::DEFAULT_LABEL);
 
         if (null !== $startTime) {
-            $this->checkpoints[''][1]['time'] = $startTime;
+            $this->checkpoints[self::DEFAULT_LABEL][1]['time'] = $startTime;
         }
     }
 
